@@ -1,0 +1,8 @@
+#!bash
+for file in "$@"
+do
+  if [ -f "$file" ]; then
+    echo "Error: File $file exists"
+    exit 1
+  fi
+done

@@ -1,0 +1,18 @@
+# linus user to run outline as
+user: outline
+# URL to download outline from
+download_url: https://github.com/Jigsaw-Code/outline-ss-server/releases/download/v1.4.0/outline-ss-server_1.4.0_linux_x86_64.tar.gz
+# name of outline executable file
+executable_name: outline-ss-server
+# expected md5 of outline executable file
+md5: d0e6c3c845a9ee6d6bc8f4c4e9289b8a
+# cipher to use in shadowsocks
+cipher: aes-256-gcm
+# port of shadowsocks to be exposed and used publicly
+ss_port: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  65383262303964663537326230386361363761303831613735306165353239373164366162356162
+  3235663863313565623133613232633631353636343462350a393264376337383336353836313036
+  37653036393864376165323466376263626635643761666633373036366438356132376430303830
+  3164353333653165370a386438633662353631363634626466306236663931313839303837313362
+  3636

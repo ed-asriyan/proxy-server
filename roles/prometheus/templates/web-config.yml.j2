@@ -1,0 +1,6 @@
+tls_server_config:
+  cert_file: /home/{{ user }}/certificate.crt
+  key_file: /home/{{ user }}/private.key
+
+basic_auth_users:
+  {{ username }}: {{ password_bcrypt }}

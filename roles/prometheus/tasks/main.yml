@@ -1,0 +1,83 @@
+- name: Create user
+  user: name={{ user }}
+
+- name: Get MD5 checksum of prometheus file
+  stat:
+    path: "/home/{{ user }}/prometheus-2.46.0.linux-amd64"
+  register: file_stat
+
+- name: Download & extract prometheus
+  when: "file_stat.stat.exists == false"
+  unarchive:
+    src: "{{ download_url }}"
+    dest: "/home/{{ user }}"
+    remote_src: yes
+  register: download
+
+- name: Set prometheus ownership, group and permissions
+  file:
+    path: "/home/{{ user }}/prometheus-2.46.0.linux-amd64/prometheus"
+    group: "{{ user }}"
+    owner: "{{ user }}"
+    mode: "700"
+
+- name: Create symlink
+  file:
+    dest: "/home/{{ user }}/prometheus"
+    src: "/home/{{ user }}/prometheus-2.46.0.linux-amd64/prometheus"
+    group: "{{ user }}"
+    owner: "{{ user }}"
+    mode: "700"
+    state: link
+
+- name: Copy private.key
+  copy:
+    src: private.key
+    dest: "/home/{{ user }}/private.key"
+    group: "{{ user }}"
+    owner: "{{ user }}"
+    mode: "600"
+
+- name: Copy certificate.crt
+  copy:
+    src: certificate.crt
+    dest: "/home/{{ user }}/certificate.crt"
+    group: "{{ user }}"
+    owner: "{{ user }}"
+    mode: "600"
+
+- name: Render prometheus config
+  template:
+    src: config.yml.j2
+    dest: "/home/{{ user }}/config.yml"
+    group: "{{ user }}"
+    owner: "{{ user }}"
+    mode: "600"
+  register: config
+
+- name: Render web config
+  template:
+    src: web-config.yml.j2
+    dest: "/home/{{ user }}/web-config.yml"
+    group: "{{ user }}"
+    owner: "{{ user }}"
+    mode: "600"
+  register: web
+
+- name: Render systemd service config
+  template:
+    src: prometheus.service.j2
+    dest: /etc/systemd/system/prometheus.service
+  register: systemd
+
+- name: Reload daemon
+  systemd:
+    daemon_reload: yes
+  when: systemd.changed
+
+- name: Restart systemd app service
+  systemd:
+    name: prometheus.service
+    state: restarted
+    enabled: yes
+  when: systemd.changed or download.changed or config.changed or web.changed

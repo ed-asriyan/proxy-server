@@ -1,0 +1,62 @@
+- name: Create user
+  user: name={{ user }}
+
+- name: Get MD5 checksum of outline executable
+  stat:
+    path: "/home/{{ user }}/{{ executable_name }}"
+    checksum_algorithm: md5
+  register: file_stat
+
+- name: Download & extract outline executable
+  when: "file_stat.stat.exists == false or file_stat.stat.checksum != '{{ md5 }}'"
+  unarchive:
+    src: "{{ download_url }}"
+    dest: "/home/{{ user }}"
+    remote_src: yes
+    extra_opts:
+      - "{{ executable_name }}"
+  register: download
+
+- name: Set executable ownership, group and permissions
+  file:
+    path: "/home/{{ user }}/{{ executable_name }}"
+    group: "{{ user }}"
+    owner: "{{ user }}"
+    mode: "700"
+
+- name: Include users variables
+  include_vars:
+    file: vars/users.yml
+
+- name: Render outline-ss-server config
+  template:
+    src: config.yml.j2
+    dest: "/home/{{ user }}/config.yml"
+    group: "{{ user }}"
+    owner: "{{ user }}"
+    mode: "600"
+  register: config
+
+- name: Render users URIs
+  delegate_to: localhost
+  template:
+    src: URIs.txt.j2
+    dest: "URIs.txt"
+
+- name: Render systemd service config
+  template:
+    src: outline.service.j2
+    dest: /etc/systemd/system/outline.service
+  register: systemd
+
+- name: Reload daemon
+  systemd:
+    daemon_reload: yes
+  when: systemd.changed
+
+- name: Restart systemd app service
+  systemd:
+    name: outline.service
+    state: restarted
+    enabled: yes
+  when: systemd.changed or download.changed or config.changed

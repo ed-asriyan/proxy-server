@@ -1,0 +1,8 @@
+#!bash
+for file in "$@"
+do
+  if ! grep -q "ANSIBLE_VAULT" "$file"; then
+    echo "Error: File $file is not encrypted with Ansible Vault"
+    exit 1
+  fi
+done

@@ -1,0 +1,11 @@
+[Unit]
+Description=outline
+After=network.service
+
+[Service]
+User={{ user }}
+ExecStart=/home/{{ user }}/{{ executable_name }} -config /home/{{ user }}/config.yml -metrics 127.0.0.1:{{ outline.metrics_port }}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

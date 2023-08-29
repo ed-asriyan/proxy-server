@@ -1,0 +1,47 @@
+name: CD | Production
+
+concurrency:
+  group: master
+  cancel-in-progress: false
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy on production
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Save known_hosts file
+        env:
+          KNOWN_HOSTS: ${{secrets.KNOWN_HOSTS}}
+        shell: bash
+        run: |
+          echo "$KNOWN_HOSTS" >> known_hosts
+
+      - name: Save vault password to vault.txt
+        env:
+          VAULT_PASSWORD: ${{secrets.VAULT_PASSWORD}}
+        shell: bash
+        run: |
+          echo "$VAULT_PASSWORD" >> vault.txt
+
+      - name: Run playbook
+        shell: bash
+        run: ansible-playbook --vault-password-file ./vault.txt -i inventory/hosts --ssh-extra-args="-o FingerprintHash=sha256 -o UserKnownHostsFile=known_hosts" master.yml
+
+      - name: Encrypt URIs.txt
+        shell: bash
+        run: ansible-vault encrypt --vault-password-file vault.txt URIs.txt
+
+      - name: Upload users.txt
+        uses: actions/upload-artifact@v3
+        with:
+          name: URIs.txt
+          path: URIs.txt

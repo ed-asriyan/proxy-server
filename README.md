@@ -6,11 +6,7 @@ It includes:
 * [prometheus](https://prometheus.io): monitoring to detect traffic abuse
 
 ## Shadowsocks clients that work with this setup:
-* Android: [Shadowsocks](https://play.google.com/store/apps/details?id=com.github.shadowsocks)
-* iOS: [Potatso](https://apps.apple.com/app/id1239860606)
-* MacOS: _?_
-* Windows: _?_
-* Linux: _?_
+https://getoutline.org/get-started/#step-3
 
 # Editing the configuration
 At the very beginning:

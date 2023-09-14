@@ -37,17 +37,13 @@ users:
 To create a new user, you need to:
 1. Decrypt file:
    ```commandline
-   ansible-vault decrypt --vault-password-file vault.txt roles/outline/vars/users.yml
+   make decrypt_users
    ```
 2. Add new users and secrets to the file
 3. Encrypt the file back:
    ```commandline
-   ansible-vault encrypt --vault-password-file vault.txt roles/outline/vars/users.yml
+   make encrypt_users
    ```
-Each user has their own shadowsocks URI:
-```python
-"ss://" + btoa(encryption_method + ":" + secret) + "@" + host + ":" + port
-```
 
 ## Update servers
 * List if servers: [encrypted hosts](inventory/hosts).
@@ -70,9 +66,10 @@ The following GitHub secrets are required for CD:
 * `KNOWN_HOSTS`: list of known hosts as in `.ssh/known_hosts`
 * `VAULT_PASSWORD`: vault password
 
-Successful workflow generates an encrypted `URIs.txt` you can download:
+Successful workflow generates an encrypted `URIs.txt` you can download to repository root and run the following command
+to decrypt the file:
 ```commandline
-ansible-vault decrypt --vault-password-file vault.txt URIs.txt
+make encrypt_uris
 ```
 It can be useful for sharing SS URIs with users.
 

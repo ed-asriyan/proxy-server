@@ -38,7 +38,7 @@ jobs:
 
       - name: Encrypt URIs.txt
         shell: bash
-        run: ansible-vault encrypt --vault-password-file vault.txt URIs.txt
+        run: make encrypt_uris
 
       - name: Upload users.txt
         uses: actions/upload-artifact@v3

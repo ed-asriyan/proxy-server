@@ -1,5 +1,5 @@
 # Proxy [![CI | pre-commit](https://github.com/ed-asriyan/proxy-server/actions/workflows/CI-pre-commit.yml/badge.svg)](https://github.com/ed-asriyan/proxy-server/actions/workflows/CI-pre-commit.yml) [![CD | Production](https://github.com/ed-asriyan/proxy-server/actions/workflows/CD-production.yml/badge.svg)](https://github.com/ed-asriyan/proxy-server/actions/workflows/CD-production.yml)
-This is deployment for my personal server with shadowsocks [outline](http://getoutline.org)/[shadowsocks](http://shadowsocks.org) on board for me and my friends to bypass internet censorship.
+This is deployment for my personal server with [outline](http://getoutline.org)/[shadowsocks](http://shadowsocks.org) on board for me and my friends to bypass internet censorship.
 
 It includes:
 * [outline-ss-server](https://github.com/Jigsaw-Code/outline-ss-server): shadowsocks implementation made by https://jigsaw.google.com that supports multiple access keys
@@ -69,14 +69,14 @@ The following GitHub secrets are required for CD:
 Successful workflow generates an encrypted `URIs.txt` you can download to repository root and run the following command
 to decrypt the file:
 ```commandline
-make encrypt_uris
+make decrypt_uris
 ```
 It can be useful for sharing SS URIs with users.
 
 ## Local
 ### Deploy on production
 ```commandline
-ansible-playbook --vault-password-file ./vault.txt -i inventory/hosts master.yml
+make deploy
 ```
 
 ### Decrypt string
@@ -88,6 +88,7 @@ ansible-vault decrypt --vault-password-file vault.txt
 ```commandline
 ansible-vault encrypt --vault-password-file vault.txt
 ```
+
 ### Decrypt file
 ```commandline
 ansible-vault encrypt --vault-password-file vault.txt <file_path>

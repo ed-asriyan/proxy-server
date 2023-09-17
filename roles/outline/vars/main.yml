@@ -1,7 +1,9 @@
 # linus user to run outline as
 user: outline
 # URL to download outline from
-download_url: https://github.com/Jigsaw-Code/outline-ss-server/releases/download/v1.4.0/outline-ss-server_1.4.0_linux_x86_64.tar.gz
+download_url:
+  arm64: https://github.com/Jigsaw-Code/outline-ss-server/releases/download/v1.4.0/outline-ss-server_1.4.0_linux_arm64.tar.gz
+  x86_64: https://github.com/Jigsaw-Code/outline-ss-server/releases/download/v1.4.0/outline-ss-server_1.4.0_linux_x86_64.tar.gz
 # name of outline executable file
 executable_name: outline-ss-server
 # expected md5 of outline executable file

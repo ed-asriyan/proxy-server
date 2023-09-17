@@ -9,13 +9,19 @@
 
 - name: Download & extract outline executable
   when: "file_stat.stat.exists == false or file_stat.stat.checksum != '{{ md5 }}'"
-  unarchive:
-    src: "{{ download_url }}"
-    dest: "/home/{{ user }}"
-    remote_src: yes
-    extra_opts:
-      - "{{ executable_name }}"
-  register: download
+  block:
+    - name: Detect arch
+      command: uname -m
+      register: arch
+
+    - name: Download & extract outline executable
+      unarchive:
+        src: "{{ download_url[arch.stdout] }}"
+        dest: "/home/{{ user }}"
+        remote_src: yes
+        extra_opts:
+          - "{{ executable_name }}"
+      register: download
 
 - name: Set executable ownership, group and permissions
   file:

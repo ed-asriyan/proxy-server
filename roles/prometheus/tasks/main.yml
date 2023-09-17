@@ -8,11 +8,17 @@
 
 - name: Download & extract prometheus
   when: "file_stat.stat.exists == false"
-  unarchive:
-    src: "{{ download_url }}"
-    dest: "/home/{{ user }}"
-    remote_src: yes
-  register: download
+  block:
+    - name: Detect arch
+      command: uname -m
+      register: arch
+
+    - name: Download & extract outline executable
+      unarchive:
+        src: "{{ download_url[arch.stdout] }}"
+        dest: "/home/{{ user }}"
+        remote_src: yes
+      register: download
 
 - name: Set prometheus ownership, group and permissions
   file:

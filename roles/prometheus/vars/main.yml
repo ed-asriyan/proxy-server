@@ -1,7 +1,9 @@
 # linus user to run prometheus as
 user: prometheus
 # URL to download prometheus from
-download_url: https://github.com/prometheus/prometheus/releases/download/v2.46.0/prometheus-2.46.0.linux-amd64.tar.gz
+download_url:
+  arm64: https://github.com/prometheus/prometheus/releases/download/v2.46.0/prometheus-2.46.0.linux-arm64.tar.gz
+  x86_64: https://github.com/prometheus/prometheus/releases/download/v2.46.0/prometheus-2.46.0.linux-amd64.tar.gz
 # username for authentication
 username: admin
 # bcrypt'ed password for authentication

@@ -18,3 +18,6 @@ decrypt_uris:
 
 deploy:
 	ansible-playbook --vault-password-file $(VAULT_FILE) -i $(HOSTS_FILE) --ssh-extra-args="-o FingerprintHash=sha256 -o UserKnownHostsFile=known_hosts" $(PLAYBOOK_FILE)
+
+generate_password:
+	openssl rand -base64 15

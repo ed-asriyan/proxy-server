@@ -34,7 +34,7 @@ jobs:
 
       - name: Run playbook
         shell: bash
-        run: make deploy encrypt_uris
+        run: make KNOWN_HOSTS_FILE=known_hosts deploy encrypt_uris
 
       - name: Upload users.txt
         uses: actions/upload-artifact@v3

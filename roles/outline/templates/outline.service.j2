@@ -5,7 +5,7 @@ After=network.service
 [Service]
 User={{ user }}
 AmbientCapabilities=CAP_NET_BIND_SERVICE
-ExecStart=/home/{{ user }}/{{ executable_name }} -config /home/{{ user }}/config.yml -metrics 127.0.0.1:{{ outline.metrics_port }}
+ExecStart=/home/{{ user }}/{{ executable_name }} -replay_history={{ replay_history }} -config /home/{{ user }}/config.yml -metrics 127.0.0.1:{{ outline.metrics_port }}
 Restart=always
 
 [Install]

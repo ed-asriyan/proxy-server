@@ -10,5 +10,7 @@ executable_name: outline-ss-server
 md5: d0e6c3c845a9ee6d6bc8f4c4e9289b8a
 # cipher to use in shadowsocks
 cipher: aes-256-gcm
+# replay defense; see https://github.com/Jigsaw-Code/outline-ss-server/blob/master/service/PROBES.md for details
+replay_history: 10000
 # port of shadowsocks to be exposed and used publicly
 ss_port: 443

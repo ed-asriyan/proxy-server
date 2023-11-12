@@ -14,3 +14,4 @@ cipher: aes-256-gcm
 replay_history: 10000
 # port of shadowsocks to be exposed and used publicly
 ss_port: 443
+redirect_website: https://ed-asriyan.github.io/proxy-server

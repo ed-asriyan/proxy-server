@@ -1,0 +1,11 @@
+[Unit]
+Description=node_exporter
+
+[Service]
+User={{ user }}
+WorkingDirectory=/home/{{ user }}
+ExecStart=/home/{{ user }}/{{ executable_name }} --web.listen-address=:{{ prometheus.node_exporter_port }}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,18 @@
+# linus user to run prometheus as
+user: node_exporter
+
+# URL to download outline from
+downloads:
+  x86_64:
+    url: https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz
+    md5: 94194e281f7d67de9a06838ea1dd7d7e
+    directory: node_exporter-1.7.0.linux-amd64
+  arm64:
+    url: https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-arm64.tar.gz
+    md5: 8f51c78b3b2b0d732c38edbf684e579b
+    directory: node_exporter-1.7.0.linux-arm64
+  armv7l:
+    url: https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-armv7.tar.gz
+    md5: b5c74984325b6b84d20a16daf24b0ee3
+    directory: node_exporter-1.7.0.linux-armv7
+executable_name: node_exporter

@@ -1,13 +1,18 @@
 # linus user to run outline as
 user: outline
 # URL to download outline from
-download_url:
-  arm64: https://github.com/Jigsaw-Code/outline-ss-server/releases/download/v1.4.0/outline-ss-server_1.4.0_linux_arm64.tar.gz
-  x86_64: https://github.com/Jigsaw-Code/outline-ss-server/releases/download/v1.4.0/outline-ss-server_1.4.0_linux_x86_64.tar.gz
+downloads:
+  x86_64:
+    url: https://github.com/Jigsaw-Code/outline-ss-server/releases/download/v1.4.0/outline-ss-server_1.4.0_linux_x86_64.tar.gz
+    md5: d0e6c3c845a9ee6d6bc8f4c4e9289b8a
+  arm64:
+    url: https://github.com/Jigsaw-Code/outline-ss-server/releases/download/v1.4.0/outline-ss-server_1.4.0_linux_arm64.tar.gz
+    md5: 8f51c78b3b2b0d732c38edbf684e579b
+  armv7l:
+    url: https://github.com/Jigsaw-Code/outline-ss-server/releases/download/v1.4.0/outline-ss-server_1.4.0_linux_armv7.tar.gz
+    md5: b17c75a6d3d2f35093d54ad3257f97db
 # name of outline executable file
 executable_name: outline-ss-server
-# expected md5 of outline executable file
-md5: d0e6c3c845a9ee6d6bc8f4c4e9289b8a
 # cipher to use in shadowsocks
 cipher: aes-256-gcm
 # replay defense; see https://github.com/Jigsaw-Code/outline-ss-server/blob/master/service/PROBES.md for details

@@ -25,15 +25,6 @@
     owner: "{{ user }}"
     mode: "700"
 
-- name: Create symlink
-  file:
-    dest: "/home/{{ user }}/{{ executable_name }}"
-    src: "/home/{{ user }}/{{ downloads[arch.stdout].directory }}/{{ executable_name }}"
-    group: "{{ user }}"
-    owner: "{{ user }}"
-    mode: "700"
-    state: link
-
 - name: Copy private.key
   copy:
     src: private.key
@@ -67,6 +58,27 @@
     owner: "{{ user }}"
     mode: "600"
   register: web
+
+- name: Remove unmanaged files
+  block:
+    - name: List all files
+      find:
+        paths: "/home/{{ user }}"
+      register: existing
+
+    - name: Remove unmanaged files
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      when: item.path|basename not in managed_files
+      with_items: "{{ existing.files|default([ ]) }}"
+      vars:
+        managed_files:
+          - web-config.yml
+          - config.yml
+          - certificate.crt
+          - private.key
+          - "{{ downloads[arch.stdout].directory }}"
 
 - name: Render systemd service config
   template:

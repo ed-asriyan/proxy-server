@@ -41,6 +41,24 @@
     mode: "600"
   register: config
 
+- name: Remove unmanaged files
+  block:
+    - name: List all files
+      find:
+        paths: "/home/{{ user }}"
+      register: existing
+
+    - name: Remove unmanaged files
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      when: item.path|basename not in managed_files
+      with_items: "{{ existing.files|default([ ]) }}"
+      vars:
+        managed_files:
+          - config.yml
+          - "{{ executable_name }}"
+
 - name: Render users URIs
   become: false
   delegate_to: localhost

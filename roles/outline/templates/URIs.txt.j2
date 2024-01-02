@@ -1,7 +1,0 @@
-{% for user in users.keys() %}
-{{ loop.index }}. {{ user }}:
-{% for secret in users[user] %}
-  {{ loop.index }}. {{ redirect_website }}#ss://{{ (cipher + ':' + secret) | b64encode }}@{{ domain }}:{{ ss_port }}
-{% endfor %}
-
-{% endfor %}

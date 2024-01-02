@@ -1,0 +1,7 @@
+{% for user in users.keys() %}
+{{ loop.index }}. {{ user }}:
+{% for config in users[user] %}
+  {{ loop.index }}. https://{{ domain }}:{{ config_delivery_port }}#ssconf://{{ domain }}:{{ config_delivery_port }}/{{ config.uuid }}
+{% endfor %}
+
+{% endfor %}

@@ -1,0 +1,162 @@
+- name: Create user
+  user: name={{ user }}
+
+- set_fact:
+    static_root: "/home/{{ user }}/{{ static_folder }}"
+
+- name: Create static directory
+  file:
+    path: "{{ static_root }}"
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: "0700"
+
+- name: Render instruction
+  template:
+    src: index.html.j2
+    dest: "{{ static_root }}/index.html"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: "600"
+
+- name: Copy robots.txt
+  copy:
+    src: robots.txt
+    dest: "{{ static_root }}/robots.txt"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: "600"
+
+- name: Include users variables
+  include_vars:
+    file: inventory/group_vars/all/users.yml
+
+- set_fact:
+    clients: "{{ users | dict2items | map(attribute='value') | flatten }}"
+
+- name: Render configs
+  template:
+    src: config.json.j2
+    dest: "{{ static_root }}/{{ item.uuid }}"
+    group: "{{ user }}"
+    owner: "{{ user }}"
+    mode: "600"
+  with_items: "{{ clients }}"
+  vars:
+    method: "{{ servers.s1.ss_cipher }}"
+    secret: "{{ item.secret }}"
+    prefix: "POST"
+    server: "{{ servers.s1.domain }}"
+    port: "{{ servers.s1.ss_port }}"
+  no_log: true
+
+- name: Render users URIs
+  become: false
+  delegate_to: localhost
+  template:
+    src: URIs.txt.j2
+    dest: "URIs.txt"
+
+- name: Get MD5 checksum of serve executable
+  stat:
+    path: "/home/{{ user }}/{{ executable_name }}"
+    checksum_algorithm: md5
+  register: file_stat
+
+- name: Detect arch
+  command: uname -m
+  register: arch
+
+- name: Download & extract serve executable
+  when: "file_stat.stat.exists == false or file_stat.stat.checksum != downloads[arch.stdout].md5"
+  unarchive:
+    src: "{{ downloads[arch.stdout].url }}"
+    dest: "/home/{{ user }}"
+    remote_src: yes
+    extra_opts:
+      - "{{ executable_name }}"
+  register: download
+
+- name: Set executable ownership, group and permissions
+  file:
+    path: "/home/{{ user }}/{{ executable_name }}"
+    group: "{{ user }}"
+    owner: "{{ user }}"
+    mode: "700"
+
+- name: Copy private.key
+  copy:
+    src: private.pem
+    dest: "/home/{{ user }}/{{ ssl_key_path }}"
+    group: "{{ user }}"
+    owner: "{{ user }}"
+    mode: "600"
+  register: ssl_private
+
+- name: Copy certificate.crt
+  copy:
+    src: certificate.pem
+    dest: "/home/{{ user }}/{{ ssl_cert_path }}"
+    group: "{{ user }}"
+    owner: "{{ user }}"
+    mode: "600"
+  register: ssl_cert
+
+- name: Remove unmanaged files in home
+  block:
+    - name: List all files
+      find:
+        paths: "/home/{{ user }}"
+      register: existing
+
+    - name: Remove unmanaged files
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      when: item.path|basename not in managed_files
+      with_items: "{{ existing.files|default([ ]) }}"
+      vars:
+        managed_files:
+          - "{{ static_folder }}"
+          - "{{ executable_name }}"
+          - "{{ ssl_cert_path }}"
+          - "{{ ssl_key_path }}"
+
+- name: Remove unmanaged files in static folder
+  block:
+    - name: List all files
+      find:
+        paths: "{{ static_root }}"
+      register: existing
+
+    - name: Remove unmanaged files
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      when: item.path | basename not in (managed_files + config_files)
+      with_items: "{{ existing.files|default([ ]) }}"
+      vars:
+        managed_files:
+          - index.html
+          - robots.txt
+        config_files: "{{ clients | map(attribute='uuid') }}"
+      no_log: true
+
+- name: Render systemd service config
+  template:
+    src: config-delivery.service.j2
+    dest: /etc/systemd/system/config-delivery.service
+  register: systemd
+
+- name: Reload daemon
+  systemd:
+    daemon_reload: yes
+  when: systemd.changed
+
+- name: Restart systemd app service
+  systemd:
+    name: config-delivery.service
+    state: restarted
+    enabled: yes
+  when: systemd.changed or download.changed or ssl_private.changed or ssl_cert.changed

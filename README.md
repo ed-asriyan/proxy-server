@@ -1,15 +1,22 @@
 # Proxy [![CI | pre-commit](https://github.com/ed-asriyan/proxy-server/actions/workflows/CI-pre-commit.yml/badge.svg)](https://github.com/ed-asriyan/proxy-server/actions/workflows/CI-pre-commit.yml) [![CD | Production](https://github.com/ed-asriyan/proxy-server/actions/workflows/CD-production.yml/badge.svg)](https://github.com/ed-asriyan/proxy-server/actions/workflows/CD-production.yml)
 This is deployment for my personal server with [outline](http://getoutline.org)/[shadowsocks](http://shadowsocks.org) on board for me and my friends to bypass internet censorship.
 
+## Shadowsocks clients that work with this setup
+https://getoutline.org/get-started/#step-3
+
+# Architecture diagram
+It's uper simple
+
+
 It includes:
 * [outline-ss-server](https://github.com/Jigsaw-Code/outline-ss-server): shadowsocks implementation made by https://jigsaw.google.com that supports multiple access keys
 * [prometheus](https://prometheus.io): monitoring to detect traffic abuse
 
-## Shadowsocks clients that work with this setup:
-https://getoutline.org/get-started/#step-3
 
-# Editing the configuration
-At the very beginning:
+# Setup
+This part requires [Ansible](https://www.ansible.com) knowledge.
+
+## At the very beginning
 1. Initialize pre-commit hook to prevent secrets from being leaked:
    1. Install [pre-commit](https://pre-commit.com/#install)
    2. Initialize pre-commit hook:
@@ -24,14 +31,20 @@ Users are stored in [encrypted users.yml file](roles/outline/vars/users.yml) wit
 ```yaml
 users:
   user1_name:
-    - user1_secret1
-    - user1_secret2
+    - uuid: user1_uuid1
+      secret: user1_secret1
+    - uuid: user1_uuid2
+      secret: user1_secret2
   user2_name:
-    - user2_secret1
-    - user2_secret2
-    - user2_secret3
+    - uuid: user2_uuid1
+      secret: user2_secret1
+    - uuid: user2_uuid2
+      secret: user2_secret2
+    - uuid: user2_uuid1
+      secret: user2_secret3
   user3_name:
-    - user3_secret1
+    - uuid: user3_uuid1
+      secret: user3_secret1
 ```
 
 To create a new user, you need to:
@@ -77,6 +90,11 @@ It can be useful for sharing SS URIs with users.
 ### Deploy on production
 ```commandline
 make deploy
+```
+
+### Generate user client
+```commandline
+make generate_user
 ```
 
 ### Decrypt string

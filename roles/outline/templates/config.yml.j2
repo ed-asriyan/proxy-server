@@ -1,9 +1,9 @@
 keys:
-{% for user in users.keys() %}
-{% for secret in users[user] %}
-  - cipher: {{ cipher }}
-    id: '{{ user }}-{{ loop.index }}'
-    port: {{ ss_port }}
-    secret: {{ secret }}
+{% for ss_username in users.keys() %}
+{% for ss_client in users[ss_username] %}
+  - cipher: {{ servers[server_name].ss_cipher }}
+    id: '{{ ss_username }}-{{ loop.index }}'
+    port: {{ servers[server_name].ss_port }}
+    secret: {{ ss_client.secret }}
 {% endfor %}
 {% endfor %}

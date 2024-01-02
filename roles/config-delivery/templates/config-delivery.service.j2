@@ -1,0 +1,11 @@
+[Unit]
+Description=config-delivery
+After=network.service
+
+[Service]
+User={{ user }}
+ExecStart=/home/{{ user }}/{{ executable_name }} --dir /home/{{ user }}/{{ static_folder }} --host 0.0.0.0 --port {{ config_delivery_port }} --ssl --cert /home/{{ user }}/{{ ssl_cert_path }} --key /home/{{ user }}/{{ ssl_key_path }}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

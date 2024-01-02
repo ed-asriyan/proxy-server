@@ -12,7 +12,7 @@
   register: arch
 
 - name: Download & extract outline executable
-  when: "file_stat.stat.exists == false or file_stat.stat.checksum != '{{ downloads[arch.stdout].md5 }}'"
+  when: "file_stat.stat.exists == false or file_stat.stat.checksum != downloads[arch.stdout].md5"
   unarchive:
     src: "{{ downloads[arch.stdout].url }}"
     dest: "/home/{{ user }}"
@@ -30,7 +30,7 @@
 
 - name: Include users variables
   include_vars:
-    file: vars/users.yml
+    file: inventory/group_vars/all/users.yml
 
 - name: Render outline-ss-server config
   template:
@@ -58,13 +58,6 @@
         managed_files:
           - config.yml
           - "{{ executable_name }}"
-
-- name: Render users URIs
-  become: false
-  delegate_to: localhost
-  template:
-    src: URIs.txt.j2
-    dest: "URIs.txt"
 
 - name: Render systemd service config
   template:

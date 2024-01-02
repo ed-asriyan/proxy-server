@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head style="display: none">
+    <title>Redirect Page</title>
+    <meta charset="UTF-8">
+    <script async>
+        var redirectUrl;
+        window.onload = function () {
+            var protocols = ["ss://", "ssconf://", "streisand://"];
+            var urlHash = window.location.hash.substring(1);
+
+            if (urlHash && protocols.some(protocol => urlHash.startsWith(protocol))) {
+                redirectUrl = urlHash;
+                document.getElementsByTagName('html')[0].style.display = 'block';
+            } else {
+                window.location.href = "{{ default_redirect }}";
+            }
+        };
+
+        function openVpn() {
+            window.location.href = redirectUrl;
+        }
+    </script>
+</head>
+<body style="max-width: 30rem">
+    <p style="text-align: center;">Если ты читаешь этот текст, то у тебя есть персональный ВПН.<br/><b>Эта ссылка -- персональная, никому её не скидывай.</b></p>
+    <h2>Итак, как подключить впн:</h2>
+    <ol>
+        <li>
+            Скачиваем приложение Outline:
+            <ul style="line-height: 1.5rem;">
+                <li><a href="https://play.google.com/store/apps/details?id=org.outline.android.client">Android</a></li>
+                <li><a href="https://itunes.apple.com/us/app/outline-app/id1356177741">iOS</a></li>
+                <li><a href="https://s3.amazonaws.com/outline-releases/client/windows/stable/Outline-Client.exe">Windows</a></li>
+                <li><a href="https://getoutline.org/get-started/#step-3">другие платформы</a></li>
+            </ul>
+        </li>
+        <li>Нажимаем на кнопку <b>Подключить</b>. Откроется приложение, жмём <b>Got it</b>, затем <b>Add server</b>
+            <div style="text-align: center; margin: 1rem;">
+                <button onclick="openVpn()"><b>Подключить</b></button>
+            </div>
+        </li>
+    </ol>
+
+    <p>Теперь впн установлен. Чтобы подключиться, нажимаем на <b>Connect</b>. Чтобы потом отключиться - <b>Disconnect</b>. Outline лучше не закрывать пока пользуетесь впн'ом</p>
+    <p>При первом подключении телефон/комп может запросить разрешение на добавление нового впн (айфон, например, просит ввести пароль).</p>
+
+    <h2>FAQ</h2>
+    <p>
+        <b>Друг/девушка/жена/мама тоже хочет впн. Могу дать свою ссылку?</b><br/>
+        Нет, свою ссылку никому давать нельзя. Напишите <a href="https://t.me/ed_asriyan">@ed_asriyan</a> в личку, я выдам новую персональную ссылку. Если не отвечаю, напишите ещё раз или подождите.
+    </p>
+
+    <p>
+        <b>У меня есть впн для телефона. Можно его поставить на комп?</b><br/>
+        Да. Выше есть ссылки на скачивания для windows и других платформ. Конфигурацию можете использовать ту же, что используете на телефоне. Главное, не перепутайте, какую конфигурацию вы используете, а какую выдали друзьям.
+    </p>
+
+    <p>
+        <b>Отслеживаются ли данные о том какие сайты я посещаю, что смотрю, скачиваю и т.д.?</b><br/>
+        Нет. Ничего не отслеживается и тем более не анализируется и не сохраняется. Логи отключены.
+    </p>
+
+    <p>
+        <b>Если я начну пользоваться впн, вообще хоть какая-нибудь информация будет генерироваться мной на сервере?</b><br/>
+Единственное, что будет - это только максимальная скорость использования подключения. Это нужно для того, чтобы выявлять злооупотребения. Например, если какой-нибудь ключ будет выжирать весь гигабитный канал, то этот ключ забаним, чтобы у остальных впн работал стабильно и быстро.
+    </p>
+
+    <p>
+        <b>Какая скорость?</b><br/>
+        У самого сервера пропускная способность 1 Gbit, которая делится на всех одновременно подключенных пользователей. Но фактическая скорость может быть ограничена вашим провайдером. Например, если у вас 100 Mbit, больше ста под впн у вас тоже никак не будет.
+    </b>
+
+    <p>
+        <b>Какой протокол?</b><br/>
+        <a href="https://shadowsocks.org">Shadowsocks</a>, реализация от <a href="https://jigsaw.google.com">Jigsaw</a> (подразделение Google).
+    </p>
+
+    <p>
+        <b>Ты пишешь, что это впн, а на самом деле это просто прокси</b><br/>
+        Верно, но люди знают только слово "впн" и задают не задают лиших вопросов - так как у них всё - "впн"
+    </p>
+
+    <p>
+        <b>Исходные код можно посмотреть?</b><br/>
+        Деплой <a href="https://github.com/ed-asriyan/proxy-server">тут</a>, а там уже найдёте ссылки на опенсорс, который деплоется.
+    </p>
+</body>
+</html>

@@ -32,6 +32,7 @@
     group: "{{ user }}"
     owner: "{{ user }}"
     mode: "600"
+  register: ssl_private
 
 - name: Copy certificate.crt
   copy:
@@ -40,6 +41,7 @@
     group: "{{ user }}"
     owner: "{{ user }}"
     mode: "600"
+  register: ssl_cert
 
 - name: Render prometheus config
   template:
@@ -96,4 +98,4 @@
     name: prometheus.service
     state: restarted
     enabled: yes
-  when: systemd.changed or download.changed or config.changed or web.changed
+  when: systemd.changed or download.changed or config.changed or web.changed or ssl_private.changed or ssl_cert.changed

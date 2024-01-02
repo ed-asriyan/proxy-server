@@ -1,5 +1,12 @@
 - hosts:
-    - blueberry
+    - frontman
+  become: true
+  roles:
+    - config-delivery
+
+- hosts:
+    - s1
+  become: true
   roles:
     - kernel-optimizations
     - outline

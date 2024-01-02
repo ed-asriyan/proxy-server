@@ -12,10 +12,15 @@ repos:
   - repo: local
     hooks:
       - id: ansible-vault-check
-        name: Check if files are encrypted with Ansible Vault
+        name: Check if users.yml is encrypted with Ansible Vault
         language: script
         entry: .pre-commit-hooks/ansible-vault-check
-        files: roles/outline/vars/users.yml
+        files: users.yml
+      - id: ansible-vault-check
+        name: Check if hosts is encrypted with Ansible Vault
+        language: script
+        entry: .pre-commit-hooks/ansible-vault-check
+        files: hosts
       - id: file-does-not-exist-check
         name: Check if files do not exist
         language: script

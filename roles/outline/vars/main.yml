@@ -13,10 +13,5 @@ downloads:
     md5: b17c75a6d3d2f35093d54ad3257f97db
 # name of outline executable file
 executable_name: outline-ss-server
-# cipher to use in shadowsocks
-cipher: aes-256-gcm
 # replay defense; see https://github.com/Jigsaw-Code/outline-ss-server/blob/master/service/PROBES.md for details
 replay_history: 10000
-# port of shadowsocks to be exposed and used publicly
-ss_port: 443
-redirect_website: https://ed-asriyan.github.io/proxy-server

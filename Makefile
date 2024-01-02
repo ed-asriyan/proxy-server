@@ -1,4 +1,4 @@
-USERS_FILE = roles/outline/vars/users.yml
+USERS_FILE = inventory/group_vars/all/users.yml
 URIS_FILE = URIs.txt
 PLAYBOOK_FILE = master.yml
 VAULT_FILE = vault.txt
@@ -20,5 +20,5 @@ decrypt_uris:
 deploy:
 	ansible-playbook --vault-password-file $(VAULT_FILE) -i $(HOSTS_FILE) --ssh-extra-args="-o FingerprintHash=sha256 -o UserKnownHostsFile=$(KNOWN_HOSTS_FILE)" $(PLAYBOOK_FILE)
 
-generate_password:
-	openssl rand -base64 15
+generate_user:
+	echo "    - uuid: $$(uuidgen)\n      secret: $$(openssl rand -base64 15)"

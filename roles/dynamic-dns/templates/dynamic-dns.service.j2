@@ -1,0 +1,12 @@
+[Unit]
+Description=dynamic-dns
+After=network.service
+Requires=dynamic-dns.timer
+
+[Service]
+Type=simple
+User={{ user }}
+ExecStart=/home/{{ user }}/{{ executable_name }} "{{ domain }}" "{{ record }}" "{{ godaddy_api_key }}"
+
+[Install]
+WantedBy=multi-user.target

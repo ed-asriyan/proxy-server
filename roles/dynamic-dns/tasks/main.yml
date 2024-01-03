@@ -1,0 +1,52 @@
+- name: Create user
+  user: name={{ user }}
+
+- name: Copy sync script
+  copy:
+    src: sync-ip.sh
+    dest: "/home/{{ user }}/{{ executable_name }}"
+    group: "{{ user }}"
+    owner: "{{ user }}"
+    mode: "700"
+
+- name: Remove unmanaged files in home
+  block:
+    - name: List all files
+      find:
+        paths: "/home/{{ user }}"
+      register: existing
+
+    - name: Remove unmanaged files
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      when: item.path|basename not in managed_files
+      with_items: "{{ existing.files|default([ ]) }}"
+      vars:
+        managed_files:
+          - "{{ executable_name }}"
+
+- name: Render systemd service config
+  template:
+    src: dynamic-dns.service.j2
+    dest: /etc/systemd/system/dynamic-dns.service
+  vars:
+    record: "{{ servers[server_name].domain.rsplit('.', 2)[0] }}"
+    domain: "{{ servers[server_name].domain.rsplit('.', 2)[1:] | join('.') }}"
+  register: systemd_service
+
+- name: Render systemd timer config
+  template:
+    src: dynamic-dns.timer.j2
+    dest: /etc/systemd/system/dynamic-dns.timer
+  register: systemd_timer
+
+- name: Reload daemon
+  systemd:
+    daemon_reload: yes
+  when: systemd_service.changed or systemd_timer.changed
+
+- name: Enable systemd timer service
+  systemd:
+    name: dynamic-dns.timer
+    enabled: yes

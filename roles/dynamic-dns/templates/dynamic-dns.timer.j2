@@ -1,0 +1,9 @@
+[Unit]
+Description="Timer for the dynamic-dns.service"
+
+[Timer]
+Unit=dynamic-dns.service
+OnUnitActiveSec={{ repeat_interval }}
+
+[Install]
+WantedBy=timers.target

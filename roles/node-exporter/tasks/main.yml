@@ -31,22 +31,12 @@
     owner: "{{ user }}"
     mode: "700"
 
-- name: Remove unmanaged files
-  block:
-    - name: List all files
-      find:
-        paths: "/home/{{ user }}"
-      register: existing
-
-    - name: Remove unmanaged files
-      file:
-        path: "{{ item.path }}"
-        state: absent
-      when: item.path|basename not in managed_files
-      with_items: "{{ existing.files|default([ ]) }}"
-      vars:
-        managed_files:
-          - "{{ downloads[arch.stdout].directory }}"
+- name: Remove unexpected files in home
+  include_tasks: tasks/remove-unexpected-files.yml
+  vars:
+    directory: "/home/{{ user }}"
+    files:
+      - "{{ downloads[arch.stdout].directory }}"
 
 - name: Render systemd service config
   template:

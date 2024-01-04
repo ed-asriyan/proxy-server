@@ -103,45 +103,21 @@
     mode: "600"
   register: ssl_cert
 
-- name: Remove unmanaged files in home
-  block:
-    - name: List all files
-      find:
-        paths: "/home/{{ user }}"
-      register: existing
+- name: Remove unexpected files in home
+  include_tasks: tasks/remove-unexpected-files.yml
+  vars:
+    directory: "/home/{{ user }}"
+    files:
+      - "{{ static_folder }}"
+      - "{{ executable_name }}"
+      - "{{ ssl_cert_path }}"
+      - "{{ ssl_key_path }}"
 
-    - name: Remove unmanaged files
-      file:
-        path: "{{ item.path }}"
-        state: absent
-      when: item.path|basename not in managed_files
-      with_items: "{{ existing.files|default([ ]) }}"
-      vars:
-        managed_files:
-          - "{{ static_folder }}"
-          - "{{ executable_name }}"
-          - "{{ ssl_cert_path }}"
-          - "{{ ssl_key_path }}"
-
-- name: Remove unmanaged files in static folder
-  block:
-    - name: List all files
-      find:
-        paths: "{{ static_root }}"
-      register: existing
-
-    - name: Remove unmanaged files
-      file:
-        path: "{{ item.path }}"
-        state: absent
-      when: item.path | basename not in (managed_files + config_files)
-      with_items: "{{ existing.files|default([ ]) }}"
-      vars:
-        managed_files:
-          - index.html
-          - robots.txt
-        config_files: "{{ clients | map(attribute='uuid') }}"
-      no_log: true
+- name: Remove unexpected files in static folder
+  include_tasks: tasks/remove-unexpected-files.yml
+  vars:
+    directory: "{{ static_root }}"
+    files: "{{ clients | map(attribute='uuid') + ['index.html', 'robots.txt'] }}"
 
 - name: Render systemd service config
   template:

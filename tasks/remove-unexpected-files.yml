@@ -1,0 +1,19 @@
+# required vars:
+# - directory
+# - files
+
+- name: Remove unexpected files
+  block:
+    - name: List all files
+      find:
+        paths: "{{ directory }}"
+        file_type: any
+      register: existing
+
+    - name: Remove unexpected files
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      when: item.path | basename not in files
+      with_items: "{{ existing.files | default([ ]) }}"
+      no_log: true

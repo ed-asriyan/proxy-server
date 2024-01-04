@@ -15,3 +15,5 @@ downloads:
 executable_name: outline-ss-server
 # replay defense; see https://github.com/Jigsaw-Code/outline-ss-server/blob/master/service/PROBES.md for details
 replay_history: 10000
+# port of metrics for prometheus to be exposed
+metrics_port: 9091

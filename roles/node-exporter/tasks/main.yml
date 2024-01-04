@@ -9,6 +9,7 @@
 
 - name: Detect arch
   command: uname -m
+  check_mode: no
   register: arch
 
 - name: Know if the directory exists
@@ -54,4 +55,4 @@
     name: node_exporter.service
     state: restarted
     enabled: yes
-  when: systemd.changed or download.changed or config.changed
+  when: systemd.changed or download.changed

@@ -9,6 +9,7 @@
 
 - name: Detect arch
   command: uname -m
+  check_mode: no
   register: arch
 
 - name: Download & extract outline executable

@@ -9,7 +9,5 @@
   become: true
   roles:
     - dynamic-dns
-    - kernel-optimizations
     - outline
-    - node-exporter
     - prometheus

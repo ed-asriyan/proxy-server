@@ -21,4 +21,4 @@ deploy:
 	ansible-playbook --vault-password-file $(VAULT_FILE) -i $(HOSTS_FILE) --ssh-extra-args="-o FingerprintHash=sha256 -o UserKnownHostsFile=$(KNOWN_HOSTS_FILE)" $(PLAYBOOK_FILE)
 
 generate_user:
-	echo "    - uuid: $$(uuidgen)\n      secret: $$(openssl rand -base64 15)"
+	echo "    - uuid: $$(uuidgen | tr '[:upper:]' '[:lower:]')\n      secret: $$(openssl rand -base64 15)"

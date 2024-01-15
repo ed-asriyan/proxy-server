@@ -13,3 +13,8 @@ scrape_configs:
           - '127.0.0.1:{{ node_exporter_port }}'
         labels:
           instance: '{{ server_name }}'
+remote_write:
+  - url: {{ remote.url }}
+    basic_auth:
+      username: {{ remote.username }}
+      password: {{ remote.password }}

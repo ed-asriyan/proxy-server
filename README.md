@@ -61,9 +61,7 @@ To create a new user, you need to:
 ## Update servers
 * List if servers: [encrypted hosts](inventory/hosts).
 * Common DNS record of the servers: [inventory/group_vars/all/vars.yml](inventory/group_vars/all/vars.yml)
-* SSL certificate & private key of the domain used for prometheus web panel:
-  * [roles/prometheus/files/certificate.crt](roles/prometheus/files/certificate.crt)
-  * [roles/prometheus/files/private.key](roles/prometheus/files/private.key)
+* SSL certificate & private key of the domain used for prometheus web panel: [roles/prometheus/files](roles/prometheus/files)
 
 To add a new server, you need:
 1. Add a new host to [inventory/hosts](inventory/hosts), give it a name

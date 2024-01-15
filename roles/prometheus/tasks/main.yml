@@ -26,19 +26,19 @@
     owner: "{{ user }}"
     mode: "700"
 
-- name: Copy private.key
+- name: Copy private key
   copy:
-    src: private.key
-    dest: "/home/{{ user }}/private.key"
+    src: "{{ key_filename }}"
+    dest: "/home/{{ user }}/{{ key_filename }}"
     group: "{{ user }}"
     owner: "{{ user }}"
     mode: "600"
   register: ssl_private
 
-- name: Copy certificate.crt
+- name: Copy certificate
   copy:
-    src: certificate.crt
-    dest: "/home/{{ user }}/certificate.crt"
+    src: "{{ certificate_filename }}"
+    dest: "/home/{{ user }}/{{ certificate_filename }}"
     group: "{{ user }}"
     owner: "{{ user }}"
     mode: "600"
@@ -69,8 +69,8 @@
     files:
       - web-config.yml
       - config.yml
-      - certificate.crt
-      - private.key
+      - "{{ certificate_filename }}"
+      - "{{ key_filename }}"
       - "{{ downloads[arch.stdout].directory }}"
       - data
 

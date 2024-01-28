@@ -8,6 +8,5 @@
     - s1
   become: true
   roles:
-    - dynamic-dns
     - outline
     - prometheus

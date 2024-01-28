@@ -11,8 +11,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
-    name: Deploy on production
+  deploy-frontman:
+    name: Deploy frontman on production
     runs-on: ubuntu-latest
 
     steps:
@@ -34,10 +34,35 @@ jobs:
 
       - name: Run playbook
         shell: bash
-        run: make KNOWN_HOSTS_FILE=known_hosts deploy encrypt_uris
+        run: make KNOWN_HOSTS_FILE=known_hosts deploy_frontman encrypt_uris
 
       - name: Upload users.txt
         uses: actions/upload-artifact@v3
         with:
           name: URIs.txt
           path: URIs.txt
+
+  deploy-proxies:
+    name: Deploy proxies on production
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Save known_hosts file
+        env:
+          KNOWN_HOSTS: ${{secrets.KNOWN_HOSTS}}
+        shell: bash
+        run: |
+          echo "$KNOWN_HOSTS" >> known_hosts
+
+      - name: Save vault password to vault.txt
+        env:
+          VAULT_PASSWORD: ${{secrets.VAULT_PASSWORD}}
+        shell: bash
+        run: |
+          echo "$VAULT_PASSWORD" >> vault.txt
+
+      - name: Run playbook
+        shell: bash
+        run: make KNOWN_HOSTS_FILE=known_hosts deploy_proxies

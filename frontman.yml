@@ -1,0 +1,4 @@
+- hosts:
+    - frontman
+  roles:
+    - config-delivery

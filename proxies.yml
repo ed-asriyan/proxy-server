@@ -1,0 +1,5 @@
+- hosts:
+    - s1
+  roles:
+    - outline
+    - prometheus

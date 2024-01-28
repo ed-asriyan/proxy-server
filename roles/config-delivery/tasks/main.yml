@@ -1,32 +1,34 @@
+- name: Install rsync
+  package:
+    name: rsync
+    state: present
+
 - name: Create user
   user: name={{ user }}
 
 - set_fact:
-    static_root: "/home/{{ user }}/{{ static_folder }}"
+    static_root_local: "/tmp/{{ static_folder }}"
 
-- name: Create static directory
+- name: Create static directory locally
+  delegate_to: localhost
+  become: false
   file:
-    path: "{{ static_root }}"
+    path: "{{ static_root_local }}"
     state: directory
-    owner: "{{ user }}"
-    group: "{{ user }}"
-    mode: "0700"
 
 - name: Render instruction
+  delegate_to: localhost
+  become: false
   template:
     src: index.html.j2
-    dest: "{{ static_root }}/index.html"
-    owner: "{{ user }}"
-    group: "{{ user }}"
-    mode: "600"
+    dest: "{{ static_root_local }}/index.html"
 
 - name: Copy robots.txt
+  delegate_to: localhost
+  become: false
   copy:
     src: robots.txt
-    dest: "{{ static_root }}/robots.txt"
-    owner: "{{ user }}"
-    group: "{{ user }}"
-    mode: "600"
+    dest: "{{ static_root_local }}/robots.txt"
 
 - name: Include users variables
   include_vars:
@@ -36,12 +38,11 @@
     clients: "{{ users | dict2items | map(attribute='value') | flatten }}"
 
 - name: Render configs
+  delegate_to: localhost
+  become: false
   template:
     src: config.json.j2
-    dest: "{{ static_root }}/{{ item.uuid }}"
-    group: "{{ user }}"
-    owner: "{{ user }}"
-    mode: "600"
+    dest: "{{ static_root_local }}/{{ item.uuid }}"
   with_items: "{{ clients }}"
   vars:
     method: "{{ servers.s1.ss_cipher }}"
@@ -50,6 +51,22 @@
     server: "{{ servers.s1.domain }}"
     port: "{{ servers.s1.ss_port }}"
   no_log: true
+
+- name: Synchronize local static root with remote host
+  synchronize:
+    src: "{{ static_root_local }}"
+    dest: "/home/{{ user }}"
+    recursive: yes
+    archive: no
+    checksum: yes
+    delete: yes
+
+- name: Remove local static root
+  delegate_to: localhost
+  become: false
+  file:
+    path: "{{ static_root_local }}"
+    state: absent
 
 - name: Render users URIs
   become: false
@@ -114,11 +131,12 @@
       - "{{ ssl_cert_path }}"
       - "{{ ssl_key_path }}"
 
-- name: Remove unexpected files in static folder
-  include_tasks: tasks/remove-unexpected-files.yml
-  vars:
-    directory: "{{ static_root }}"
-    files: "{{ clients | map(attribute='uuid') + ['index.html', 'robots.txt'] }}"
+- name: Remove local source repository
+  delegate_to: localhost
+  become: false
+  file:
+    path: "{{ static_root_local }}"
+    state: absent
 
 - name: Render systemd service config
   template:

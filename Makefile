@@ -2,8 +2,15 @@ USERS_FILE = inventory/group_vars/all/users.yml
 URIS_FILE = URIs.txt
 PLAYBOOK_FILE_FRONTMAN = frontman.yml
 PLAYBOOK_FILE_PROXIES = proxies.yml
+HOSTS_FILE = inventory/hosts
 VAULT_FILE = vault.txt
 KNOWN_HOSTS_FILE=~/.ssh/known_hosts
+
+encrypt_hosts:
+	ansible-vault encrypt --vault-password-file $(VAULT_FILE) $(HOSTS_FILE)
+
+decrypt_hosts:
+	ansible-vault decrypt --vault-password-file $(VAULT_FILE) $(HOSTS_FILE)
 
 encrypt_users:
 	ansible-vault encrypt --vault-password-file $(VAULT_FILE) $(USERS_FILE)

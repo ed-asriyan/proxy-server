@@ -5,13 +5,15 @@ This is deployment for my personal server with [outline](http://getoutline.org)/
 https://getoutline.org/get-started/#step-3
 
 # Architecture diagram
-It's uper simple
+![digram](./diagram.svg)
 
+**Frontman** is linux host serving via HTTPS
+* Static index.html with installation instructions
+* Dynamic ShadowSocks configuration ([SIP008](https://shadowsocks.org/doc/sip008.html))
 
-It includes:
+**Proxy 1..N** are linux hosts with installed
 * [outline-ss-server](https://github.com/Jigsaw-Code/outline-ss-server): shadowsocks implementation made by https://jigsaw.google.com that supports multiple access keys
 * [prometheus](https://prometheus.io): monitoring to detect traffic abuse
-
 
 # Setup
 This part requires [Ansible](https://www.ansible.com) knowledge.
@@ -26,8 +28,8 @@ This part requires [Ansible](https://www.ansible.com) knowledge.
 2. Create `vault.txt` file in the repository root. Put your vault password file in it. **Make sure that only you have
 permissions to read/write it: `chmod 600 vault.txt`!**
 
-## Update shadowsocks users
-Users are stored in [encrypted users.yml file](roles/outline/vars/users.yml) with the following structure:
+## How to update list of SS users
+Users are stored in [encrypted users.yml file](inventory/group_vars/all/users.yml) with the following schema:
 ```yaml
 users:
   user1_name:
@@ -47,28 +49,37 @@ users:
       secret: user3_secret1
 ```
 
-To create a new user, you need to:
-1. Decrypt file:
+To create a new user, you should:
+1. Decrypt the file with users:
    ```commandline
    make decrypt_users
    ```
-2. Add new users and secrets to the file
+2. Add/update users and secrets to the file
 3. Encrypt the file back:
    ```commandline
    make encrypt_users
    ```
 
-## Update servers
-* List if servers: [encrypted hosts](inventory/hosts).
-* Common DNS record of the servers: [inventory/group_vars/all/vars.yml](inventory/group_vars/all/vars.yml)
-* SSL certificate & private key of the domain used for prometheus web panel: [roles/prometheus/files](roles/prometheus/files)
+## How to update list of proxy servers
+1. Update [hosts file](inventory/hosts)
+   1. Decrypt hosts file:
+      ```commandline
+      make decrypt_hosts
+      ```
+    2. Add/update servers in the file
+    3. Encrypt hosts file:
+      ```commandline
+      make encrypt_hosts
+      ```
+2. Update inventory variables
+   1. Create a new directory in [group_vars](inventory/group_vars) and provide variable specific to the particular server
+   2. Update list of servers in [vars.yml](inventory/group_vars/all/vars.yml)
+3. Update list of hosts in [proxies.yml](proxies.yml)
 
-To add a new server, you need:
-1. Add a new host to [inventory/hosts](inventory/hosts), give it a name
-2. Add a new host name to [master.yml](master.yml)
-3. Copy an existing directory in [inventory/](inventory/), rename it within the given name and adjust variables in it
+## How to do smth else
+Read code and find out
 
-## Deploy updates
+## How to apply changes to production
 Just push to master branch. GitHub Actions will automatically apply updates to the servers.
 
 # Development
@@ -87,7 +98,7 @@ It can be useful for sharing SS URIs with users.
 ## Local
 ### Deploy on production
 ```commandline
-make deploy
+make deploy_frontman deploy_proxies
 ```
 
 ### Generate user client

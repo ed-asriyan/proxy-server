@@ -86,6 +86,46 @@
         h1, h2, h3 {
             text-align: center;
         }
+
+        .download_link {
+            max-width: 100%;
+            cursor: pointer;
+        }
+
+        .border {
+            border: 1px black solid;
+            border-radius: 1rem;
+        }
+
+        .grid2x2 {
+            justify-content: center;
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row;
+            margin: 1rem 0;
+        }
+
+        .grid2x2 > div {
+            display: flex;
+            flex-basis: calc(50% - 20px);
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .grid2x2 > div > div {
+            display: flex;
+            justify-content: center;
+            flex-direction: row;
+        }
+
+        .box {
+            margin: 0.5rem;
+            text-align: center;
+        }
+
+        .text {
+            font-size: 0.75rem;
+        }
     </style>
 </head>
 <body id="body">
@@ -96,12 +136,33 @@
         <ol style="border: 0.2rem red solid; padding: 1rem 2rem 0 2rem;">
             <li>
                 Скачиваем приложение Outline:
-                <ul style="line-height: 1.5rem;">
-                    <li><a href="https://play.google.com/store/apps/details?id=org.outline.android.client">Android</a></li>
-                    <li><a href="https://itunes.apple.com/us/app/outline-app/id1356177741">iOS</a></li>
-                    <li><a href="https://s3.amazonaws.com/outline-releases/client/windows/stable/Outline-Client.exe">Windows</a></li>
-                    <li><a href="https://getoutline.org/get-started/#step-3">другие платформы</a></li>
-                </ul>
+                <div class="grid2x2">
+                    <div class="box">
+                        <div>
+                            <a href="https://itunes.apple.com/us/app/outline-app/id1356177741">
+                                <img class="download_link" src="https://developer.apple.com/app-store/marketing/guidelines/images/badge-example-preferred_2x.png"/>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <div>
+                            <a href="https://play.google.com/store/apps/details?id=org.outline.android.client">
+                                <img class="download_link" src="https://play.google.com/intl/en_us/badges/static/images/badges/ru_badge_web_generic.png"/>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <div>
+                            <a href="https://s3.amazonaws.com/outline-releases/client/windows/stable/Outline-Client.exe">
+                                <img class="download_link" src="https://www.realsoftphone.com/assets/images/download-from-windows-store-1-698x238.png"/>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="box border">
+                        <div>
+                            <a class="download_link text" href="https://getoutline.org/get-started/#step-3">другие платформы</a>
+                        </div>
+                    </div>
             </li>
             <li>
                 Нажимаем на кнопку <b>Подключить ВПН</b> внизу.<br/>

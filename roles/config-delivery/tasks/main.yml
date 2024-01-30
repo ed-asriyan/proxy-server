@@ -16,12 +16,19 @@
     path: "{{ static_root_local }}"
     state: directory
 
-- name: Render instruction
+- name: Render index.html
   delegate_to: localhost
   become: false
   template:
     src: index.html.j2
     dest: "{{ static_root_local }}/index.html"
+
+- name: Render guide.html
+  delegate_to: localhost
+  become: false
+  copy:
+    src: guide.html
+    dest: "{{ static_root_local }}/guide.html"
 
 - name: Copy robots.txt
   delegate_to: localhost

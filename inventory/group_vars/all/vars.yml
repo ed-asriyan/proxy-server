@@ -3,6 +3,7 @@
 # this information is whared between all hosts
 servers:
   s1:
+    uuid: 7e24bc5f-3495-4773-a60c-0cf748383aa9
     # domain of server that will be put into config
     domain: !vault |
       $ANSIBLE_VAULT;1.1;AES256

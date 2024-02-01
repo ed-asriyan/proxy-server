@@ -1,1 +1,26 @@
-{"method":"{{ method }}","password":"{{ secret }}","prefix":"{{ prefix }}","server":"{{ server }}","server_port":"{{ port }}"}
+{
+    "version": 1,
+    "servers": [
+        {% for server in servers | dict2items %}
+            {
+                "id": "{{ server.value.uuid }}",
+                "remarks": "{{ server.key }}",
+                "server": "{{ server.value.domain }}",
+                "server_port": {{ server.value.ss_port }},
+                "password": "{{ secret }}",
+                "method": "{{ server.value.ss_cipher }}"
+            }
+            {% if not loop.last %}
+            ,
+            {% endif %}
+        {% endfor %}
+    ],
+
+    "comment": "the fields below are specifically for Outline client as it does not support the latest version of SIP008",
+
+    "method": "{{ servers.s1.ss_cipher }}",
+    "password": "{{ secret }}",
+    "prefix": "{{ prefix }}",
+    "server":"{{ servers.s1.domain }}",
+    "server_port":"{{ servers.s1.ss_port }}"
+}

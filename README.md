@@ -8,7 +8,7 @@ https://getoutline.org/get-started/#step-3
 ![digram](./diagram.svg)
 
 **Frontman** is linux host serving via HTTPS
-* Static index.html with installation instructions
+* Static html pages with installation instructions
 * Dynamic ShadowSocks configuration ([SIP008](https://shadowsocks.org/doc/sip008.html))
 
 **Proxy 1..N** are linux hosts with installed

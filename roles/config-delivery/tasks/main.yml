@@ -52,11 +52,8 @@
     dest: "{{ static_root_local }}/{{ item.uuid }}"
   with_items: "{{ clients }}"
   vars:
-    method: "{{ servers.s1.ss_cipher }}"
     secret: "{{ item.secret }}"
     prefix: "POST"
-    server: "{{ servers.s1.domain }}"
-    port: "{{ servers.s1.ss_port }}"
   no_log: true
 
 - name: Synchronize local static root with remote host

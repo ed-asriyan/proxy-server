@@ -7,7 +7,7 @@ https://getoutline.org/get-started/#step-3
 # Architecture diagram
 ![digram](./diagram.svg)
 
-**Frontman** is linux host serving via HTTPS
+**Frontman** is linux host seith static server serving via HTTPS
 * Static html pages with installation instructions
 * Dynamic ShadowSocks configuration ([SIP008](https://shadowsocks.org/doc/sip008.html))
 

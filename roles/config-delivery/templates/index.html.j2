@@ -5,13 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>
+        const redirect = function (url) {
+            window.location.href = url || "{{ default_redirect }}";
+        };
+
         window.onload = function () {
-            var hash = window.location.hash;
+            const hash = window.location.hash;
 
             if (hash) {
-                window.location.href = "/guide.html" + hash;
+                let url;
+                if (hash.startsWith("#ssconf://")) {
+                    url = "https://" + hash.slice(9);
+                } else {
+                    url = "/" + hash.slice(1);
+                }
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        const instructionUrl = data["instruction_url"];
+                        if (instructionUrl) {
+                            redirect(instructionUrl);
+                        } else {
+                            redirect();
+                        }
+                    });
             } else {
-                window.location.href = "{{ default_redirect }}";
+                redirect();
             }
         };
     </script>

@@ -126,6 +126,21 @@
         .text {
             font-size: 0.75rem;
         }
+
+        .connect-vpn {
+            border: solid 2px red;
+            border-radius: 1rem;
+            background-color: whitesmoke;
+            color: black;
+            text-align: center;
+            font-size: 1rem;
+            padding: 1rem 2rem;
+            cursor: pointer;
+        }
+
+        .connect-vpn:hover {
+            background-color: azure;
+        }
     </style>
 </head>
 <body id="body">
@@ -168,7 +183,7 @@
                 Нажимаем на кнопку <b>Подключить ВПН</b> внизу.<br/>
                 Откроется приложение, жмём <b>Got it</b>, затем <b>Add server</b>
                 <div style="text-align: center; margin: 1rem;">
-                    <button id="connect_vpn"><b>Подключить ВПН</b></button>
+                    <button id="connect_vpn" class="connect-vpn"><b>Подключить ВПН</b></button>
                 </div>
             </li>
         </ol>

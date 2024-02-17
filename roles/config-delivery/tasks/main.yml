@@ -8,6 +8,10 @@
 
 - set_fact:
     static_root_local: "/tmp/{{ static_folder }}"
+    instruction_filename: "{{ ansible_date_time.iso8601_micro | to_uuid }}.html"
+
+- set_fact:
+    instruction_url: "https://{{ frontman_domain }}:{{ frontman_port }}/{{ instruction_filename }}"
 
 - name: Create static directory locally
   delegate_to: localhost
@@ -28,7 +32,7 @@
   become: false
   copy:
     src: guide.html
-    dest: "{{ static_root_local }}/guide.html"
+    dest: "{{ static_root_local }}/{{ instruction_filename }}"
 
 - name: Copy robots.txt
   delegate_to: localhost
@@ -54,6 +58,7 @@
   vars:
     secret: "{{ item.secret }}"
     prefix: "POST"
+    uuid: "{{ item.uuid }}"
   no_log: true
 
 - name: Synchronize local static root with remote host

@@ -16,6 +16,8 @@
         {% endfor %}
     ],
 
+    "instruction_url": "https://{{ frontman_domain }}:{{ frontman_port }}/{{ instruction_filename }}#ssconf://{{ frontman_domain }}:{{ frontman_port }}/{{ uuid }}",
+
     "comment": "the fields below are specifically for Outline client as it does not support the latest version of SIP008",
 
     "method": "{{ servers.s1.ss_cipher }}",

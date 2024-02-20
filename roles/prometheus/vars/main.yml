@@ -25,8 +25,6 @@ password_bcrypt: !vault |
   65373466386534346361393338656336356264346335363238656165353362313963336236386335
   323932653239643665356636653563396231
 
-# limit of physical memery prometheus can use
-memory_limit: 100M
 # how long prometheus should store metrics data
 retention: 31d
 # port of prometheus to be exposed and used publicly

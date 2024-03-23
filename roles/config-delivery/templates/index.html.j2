@@ -28,7 +28,8 @@
                         } else {
                             redirect();
                         }
-                    });
+                    })
+                    .catch(() => redirect());
             } else {
                 redirect();
             }

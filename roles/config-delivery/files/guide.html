@@ -15,8 +15,14 @@
             }
         };
 
+        let _hash;
         function parseHash() {
-            return window.location.hash.substring(1);
+            if (!_hash) {
+                _hash = window.location.hash.substring(1);
+                // invalidate location so that users cannot share personal links
+                window.history.replaceState({}, null, '/#do-not-share-your-personal-link');
+            }
+            return _hash;
         }
 
         function getSsConfig(hash) {

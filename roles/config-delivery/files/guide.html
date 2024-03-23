@@ -5,44 +5,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>
-        var protocols = {
-            ss: "ss://",
-            ssconf: "ssconf://",
-        };
-
         window.onload = function () {
-            var redirectUrl = parseHash();
+            var hash = parseHash();
 
-            if (redirectUrl) {
-                render(redirectUrl);
+            if (hash) {
+                render(hash);
             } else {
-                window.location.href = "/";
+                window.location.href = '/';
             }
         };
 
         function parseHash() {
-            var urlHash = window.location.hash.substring(1);
-            if (urlHash && Object.keys(protocols).some(protocol => urlHash.startsWith(protocol))) {
-                return urlHash;
-            }
+            return window.location.hash.substring(1);
         }
 
-        function getSsConfig(uri) {
-            if (uri.startsWith(protocols.ss)) {
-                return new Promise(resolve => resolve(uri));
-            } else {
-                return fetch('https://' + uri.slice(9))
-                    .then(response => response.json());
-            }
+        function getSsConfig(hash) {
+            return fetch('/' + hash)
+                .then(response => response.json());
+        }
+
+        function getSsConfUri(hash) {
+            return 'ssconf://' + location.host + '/' + hash;
         }
 
         function getSsUri(config) {
-            return 'ss://' + btoa(config.method + ":" + config.password) + "@" + config.server + ":" + config['server_port'];
+            return 'ss://' + btoa(config.method + ':' + config.password) + '@' + config.server + ':' + config['server_port'];
         }
 
-        function render(redirectUrl) {
+        function getStraisandUri(conf) {
+            return 'streisand://import/' + getSsUri(conf);
+        }
+
+        function render(hash) {
+            var ssConfUri = getSsConfUri(hash);
             document.getElementById('connect_vpn').addEventListener('click', () => {
-                window.location.href = redirectUrl;
+                window.location.href = ssConfUri;
             });
             document.getElementById('body').style = `
                 display: block;
@@ -51,35 +48,33 @@
                 background-color: white;
                 padding: 1rem;
             `;
-            if (redirectUrl.startsWith(protocols.ssconf)){
-                document.getElementById('sip008').style = "display: block";
-                document.getElementById('sip008_uri').innerHTML = redirectUrl;
-            }
+            document.getElementById('sip008').style = 'display: block';
+            document.getElementById('sip008_uri').innerHTML = ssConfUri;
 
-            getSsConfig(redirectUrl)
+            getSsConfig(hash)
                 .then(config => {
-                    document.getElementById('nerd').style = "display: block";
+                    document.getElementById('nerd').style = 'display: block';
                     var ssUri = getSsUri(config);
 
-                    document.getElementById('ss').style = "display: block";
+                    document.getElementById('ss').style = 'display: block';
                     document.getElementById('ss_uri').innerHTML = ssUri;
                     document.getElementById('ss_connect').addEventListener('click', () => {
                         window.location.href = ssUri;
                     });
 
-                    var streisandUri = 'streisand://import/' + ssUri;
-                    document.getElementById('streisand').style = "display: block";
+                    var streisandUri = getStraisandUri(config);
+                    document.getElementById('streisand').style = 'display: block';
                     document.getElementById('streisand_uri').innerHTML = streisandUri;
                     document.getElementById('streisand_connect').addEventListener('click', () => {
                         window.location.href = streisandUri;
                     });
 
-                    document.getElementById('manual').style = "display: block";
+                    document.getElementById('manual').style = 'display: block';
                     document.getElementById('manual_server').innerHTML = config.server;
                     document.getElementById('manual_port').innerHTML = config['server_port'];
                     document.getElementById('manual_password').innerHTML = config.password;
                     document.getElementById('manual_method').innerHTML = config.method;
-                })
+                });
         }
     </script>
     <style>

@@ -27,6 +27,8 @@ This part requires [Ansible](https://www.ansible.com) knowledge.
       ```
 2. Create `vault.txt` file in the repository root. Put your vault password file in it. **Make sure that only you have
 permissions to read/write it: `chmod 600 vault.txt`!**
+3. If servers are not configured yet, skip this step and go to "New server setup" section. Otherwise if server is already configured, add SSH private key to `id_rsa` file in the root of the local repository. **Make sure that only you have
+permissions to read/write it: `chmod 600 id_rsa`!**
 
 ## How to update list of SS users
 Users are stored in [encrypted users.yml file](inventory/group_vars/all/users.yml) with the following schema:
@@ -60,8 +62,14 @@ To create a new user, you should:
    make encrypt_users
    ```
 
-## How to update list of proxy servers
-1. Update [hosts file](inventory/hosts)
+## New server setup
+1. Generate new SSH key and store it in `id_rsa` file in the root of the local repository:
+   ```commandline
+   ssh-keygen -t ed25519 -C "your_email@example.com"
+   ```
+   If you have already generated keys, skip this step.
+2. Add content of `is_rsa.pub` file (is also a result of previous command) to `/root/.ssh/authorized_keys` file on a new server. **Make sure that proper access rights are granted: `chmod 700 /root/.ssh && chmod 600 /root/.ssh/authorized_keys`!**
+3. Update [hosts file](inventory/hosts)
    1. Decrypt hosts file:
       ```commandline
       make decrypt_hosts
@@ -71,10 +79,10 @@ To create a new user, you should:
       ```commandline
       make encrypt_hosts
       ```
-2. Update inventory variables
+4. Update inventory variables
    1. Create a new directory in [group_vars](inventory/group_vars) and provide variable specific to the particular server
    2. Update list of servers in [vars.yml](inventory/group_vars/all/vars.yml)
-3. Update list of hosts in [proxies.yml](proxies.yml)
+5. Update list of hosts in [proxies.yml](proxies.yml)
 
 ## How to do smth else
 Read code and find out
@@ -86,6 +94,7 @@ Just push to master branch. GitHub Actions will automatically apply updates to t
 ## CD
 The following GitHub secrets are required for CD:
 * `KNOWN_HOSTS`: list of known hosts as in `.ssh/known_hosts`
+* `SSH_PRIVATE_KEY`: SSH private key to access servers
 * `VAULT_PASSWORD`: vault password
 
 Successful workflow generates an encrypted `URIs.txt` you can download to repository root and run the following command

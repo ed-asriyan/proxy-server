@@ -20,21 +20,29 @@ jobs:
 
       - name: Save known_hosts file
         env:
-          KNOWN_HOSTS: ${{secrets.KNOWN_HOSTS}}
+          KNOWN_HOSTS: ${{ secrets.KNOWN_HOSTS }}
         shell: bash
         run: |
-          echo "$KNOWN_HOSTS" >> known_hosts
+          mkdir -p ~/.ssh
+          echo "$KNOWN_HOSTS" >> ~/.ssh/known_hosts
+
+      - name: Save id_rsa file
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        shell: bash
+        run: |
+          echo "$SSH_PRIVATE_KEY" > id_rsa && chmod 600 id_rsa
 
       - name: Save vault password to vault.txt
         env:
-          VAULT_PASSWORD: ${{secrets.VAULT_PASSWORD}}
+          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD }}
         shell: bash
         run: |
-          echo "$VAULT_PASSWORD" >> vault.txt
+          echo "$VAULT_PASSWORD" > vault.txt && chmod 600 vault.txt
 
       - name: Run playbook
         shell: bash
-        run: make KNOWN_HOSTS_FILE=known_hosts deploy_frontman encrypt_uris
+        run: make deploy_frontman uris_encrypt
 
       - name: Upload users.txt
         uses: actions/upload-artifact@v3
@@ -51,18 +59,26 @@ jobs:
 
       - name: Save known_hosts file
         env:
-          KNOWN_HOSTS: ${{secrets.KNOWN_HOSTS}}
+          KNOWN_HOSTS: ${{ secrets.KNOWN_HOSTS }}
         shell: bash
         run: |
-          echo "$KNOWN_HOSTS" >> known_hosts
+          mkdir -p ~/.ssh
+          echo "$KNOWN_HOSTS" >> ~/.ssh/known_hosts
+
+      - name: Save id_rsa file
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        shell: bash
+        run: |
+          echo "$SSH_PRIVATE_KEY" > id_rsa && chmod 600 id_rsa
 
       - name: Save vault password to vault.txt
         env:
-          VAULT_PASSWORD: ${{secrets.VAULT_PASSWORD}}
+          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD }}
         shell: bash
         run: |
-          echo "$VAULT_PASSWORD" >> vault.txt
+          echo "$VAULT_PASSWORD" > vault.txt && chmod 600 vault.txt
 
       - name: Run playbook
         shell: bash
-        run: make KNOWN_HOSTS_FILE=known_hosts deploy_proxies
+        run: make deploy_proxies

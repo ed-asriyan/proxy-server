@@ -26,7 +26,7 @@ password_bcrypt: !vault |
   323932653239643665356636653563396231
 
 # how long prometheus should store metrics data
-retention: 31d
+retention: 365d
 # port of prometheus to be exposed and used publicly
 prometheus_port: !vault |
   $ANSIBLE_VAULT;1.1;AES256

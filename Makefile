@@ -4,31 +4,30 @@ PLAYBOOK_FILE_FRONTMAN = frontman.yml
 PLAYBOOK_FILE_PROXIES = proxies.yml
 HOSTS_FILE = inventory/hosts
 VAULT_FILE = vault.txt
-KNOWN_HOSTS_FILE=~/.ssh/known_hosts
 
-encrypt_hosts:
+hosts_encrypt:
 	ansible-vault encrypt --vault-password-file $(VAULT_FILE) $(HOSTS_FILE)
 
-decrypt_hosts:
+hosts_decrypt:
 	ansible-vault decrypt --vault-password-file $(VAULT_FILE) $(HOSTS_FILE)
 
-encrypt_users:
+users_encrypt:
 	ansible-vault encrypt --vault-password-file $(VAULT_FILE) $(USERS_FILE)
 
-decrypt_users:
+users_decrypt:
 	ansible-vault decrypt --vault-password-file $(VAULT_FILE) $(USERS_FILE)
 
-encrypt_uris:
+uris_encrypt:
 	ansible-vault encrypt --vault-password-file $(VAULT_FILE) $(URIS_FILE)
 
-decrypt_uris:
+uris_decrypt:
 	ansible-vault decrypt --vault-password-file $(VAULT_FILE) $(URIS_FILE)
 
 deploy_frontman:
-	ansible-playbook --vault-password-file $(VAULT_FILE) --ssh-extra-args="-o FingerprintHash=sha256 -o UserKnownHostsFile=$(KNOWN_HOSTS_FILE)" $(PLAYBOOK_FILE_FRONTMAN)
+	ansible-playbook --vault-password-file $(VAULT_FILE) $(PLAYBOOK_FILE_FRONTMAN)
 
 deploy_proxies:
-	ansible-playbook --vault-password-file $(VAULT_FILE) --ssh-extra-args="-o FingerprintHash=sha256 -o UserKnownHostsFile=$(KNOWN_HOSTS_FILE)" $(PLAYBOOK_FILE_PROXIES)
+	ansible-playbook --vault-password-file $(VAULT_FILE) $(PLAYBOOK_FILE_PROXIES)
 
 generate_user:
 	echo "    - uuid: $$(uuidgen | tr '[:upper:]' '[:lower:]')\n      secret: $$(openssl rand -base64 15)"

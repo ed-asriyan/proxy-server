@@ -1,6 +1,6 @@
 tls_server_config:
-  cert_file: /home/{{ user }}/{{ certificate_filename }}
-  key_file: /home/{{ user }}/{{ key_filename }}
+  cert_file: {{ ssl_cert_path }}
+  key_file: {{ ssl_key_path }}
 
 basic_auth_users:
   {{ username }}: {{ password_bcrypt }}

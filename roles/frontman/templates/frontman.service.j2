@@ -1,0 +1,11 @@
+[Unit]
+Description=frontman
+After=network.service
+
+[Service]
+User=root
+ExecStart=/home/{{ user }}/{{ executable_name }} --dir /home/{{ user }}/{{ static_folder }} --host 0.0.0.0 --port {{ frontman_port }} --ssl --cert {{ ssl_cert_path }} --key {{ ssl_key_path }}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

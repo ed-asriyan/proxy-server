@@ -1,0 +1,6 @@
+dependencies:
+  - role: certbot
+    vars:
+      certbot_domain: "{{ frontman_domain }}"
+      certbot_service_name: "frontman-certbot"
+      certbot_post_hook: "systemctl restart frontman"

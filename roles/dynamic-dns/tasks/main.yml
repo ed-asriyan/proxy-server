@@ -21,8 +21,8 @@
     src: dynamic-dns.service.j2
     dest: /etc/systemd/system/dynamic-dns.service
   vars:
-    record: "{{ servers[server_name].domain.rsplit('.', 2)[0] }}"
-    domain: "{{ servers[server_name].domain.rsplit('.', 2)[1:] | join('.') }}"
+    record: "{{ server.domain.rsplit('.', 2)[0] }}"
+    domain: "{{ server.domain.rsplit('.', 2)[1:] | join('.') }}"
   register: systemd_service
 
 - name: Render systemd timer config

@@ -1,0 +1,10 @@
+[Unit]
+Description=frontman-certbot
+After=network.service
+
+[Service]
+User=root
+ExecStart=/snap/bin/certbot certonly --standalone --non-interactive --agree-tos -d {{ certbot_domain }} --post-hook "{{ certbot_post_hook }}"
+
+[Install]
+WantedBy=multi-user.target

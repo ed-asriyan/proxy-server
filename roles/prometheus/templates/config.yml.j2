@@ -6,13 +6,13 @@ scrape_configs:
       - targets:
           - '127.0.0.1:{{ metrics_port }}'
         labels:
-          instance: '{{ server_name }}'
+          instance: '{{ server.uuid }}'
   - job_name: node-exporter
     static_configs:
       - targets:
           - '127.0.0.1:{{ node_exporter_port }}'
         labels:
-          instance: '{{ server_name }}'
+          instance: '{{ server.uuid }}'
 remote_write:
   - url: {{ remote.url }}
     basic_auth:

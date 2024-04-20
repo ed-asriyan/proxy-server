@@ -1,0 +1,9 @@
+[Unit]
+Description="Timer for the {{ certbot_service_name }}.service"
+
+[Timer]
+Unit={{ certbot_service_name }}.service
+OnUnitActiveSec={{ certbot_repeat_interval }}
+
+[Install]
+WantedBy=timers.target

@@ -112,24 +112,6 @@
     owner: "{{ user }}"
     mode: "700"
 
-- name: Copy private.key
-  copy:
-    src: private.pem
-    dest: "/home/{{ user }}/{{ ssl_key_path }}"
-    group: "{{ user }}"
-    owner: "{{ user }}"
-    mode: "600"
-  register: ssl_private
-
-- name: Copy certificate.crt
-  copy:
-    src: certificate.pem
-    dest: "/home/{{ user }}/{{ ssl_cert_path }}"
-    group: "{{ user }}"
-    owner: "{{ user }}"
-    mode: "600"
-  register: ssl_cert
-
 - name: Remove unexpected files in home
   include_tasks: tasks/remove-unexpected-files.yml
   vars:
@@ -137,8 +119,6 @@
     files:
       - "{{ static_folder }}"
       - "{{ executable_name }}"
-      - "{{ ssl_cert_path }}"
-      - "{{ ssl_key_path }}"
 
 - name: Remove local source repository
   delegate_to: localhost
@@ -149,8 +129,8 @@
 
 - name: Render systemd service config
   template:
-    src: config-delivery.service.j2
-    dest: /etc/systemd/system/config-delivery.service
+    src: frontman.service.j2
+    dest: /etc/systemd/system/frontman.service
   register: systemd
 
 - name: Reload daemon
@@ -160,7 +140,7 @@
 
 - name: Restart systemd app service
   systemd:
-    name: config-delivery.service
+    name: frontman.service
     state: restarted
     enabled: yes
-  when: systemd.changed or download.changed or ssl_private.changed or ssl_cert.changed
+  when: systemd.changed or download.changed

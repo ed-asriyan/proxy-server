@@ -1,0 +1,11 @@
+# how ofter to check the ssl cert/key
+certbot_repeat_interval: 720min
+
+# domain for issuing a cert
+certbot_domain:
+
+# how to name systemctl service for aute renewing
+certbot_service_name:
+
+# what command to run after successful renewal/issueing
+certbot_post_hook:

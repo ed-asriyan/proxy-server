@@ -1,5 +1,5 @@
-# linus user to run outline as
-user: config-delivery
+# linus user to run frontman as
+user: frontman
 # URL to download outline from
 downloads:
   x86_64:
@@ -17,10 +17,6 @@ executable_name: serve
 frontman_port: 1399
 # relative path of directory where static content should be stored
 static_folder: static
-# SSL cert relative path
-ssl_cert_path: cert.pem
-# SSL cert relative path
-ssl_key_path: key.pem
 # where redirect to if user opened index page without paramneters
 default_redirect: !vault |
   $ANSIBLE_VAULT;1.1;AES256

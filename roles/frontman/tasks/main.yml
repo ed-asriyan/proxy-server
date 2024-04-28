@@ -112,6 +112,26 @@
     owner: "{{ user }}"
     mode: "700"
 
+- name: Copy SSL key
+  copy:
+    src: "{{ ssl_key_path }}"
+    dest: "{{ frontman_ssl_key_path }}"
+    group: "{{ user }}"
+    owner: "{{ user }}"
+    mode: "600"
+    remote_src: yes
+  register: ssl_private
+
+- name: Copy SSL certificate
+  copy:
+    src: "{{ ssl_cert_path }}"
+    dest: "{{ frontman_ssl_cert_path }}"
+    group: "{{ user }}"
+    owner: "{{ user }}"
+    mode: "600"
+    remote_src: yes
+  register: ssl_cert
+
 - name: Remove unexpected files in home
   include_tasks: tasks/remove-unexpected-files.yml
   vars:
@@ -119,6 +139,8 @@
     files:
       - "{{ static_folder }}"
       - "{{ executable_name }}"
+      - "{{ frontman_ssl_cert_filename }}"
+      - "{{ frontman_ssl_key_filename }}"
 
 - name: Remove local source repository
   delegate_to: localhost
@@ -143,4 +165,4 @@
     name: frontman.service
     state: restarted
     enabled: yes
-  when: systemd.changed or download.changed
+  when: systemd.changed or download.changed or ssl_private.changed or ssl_cert.changed

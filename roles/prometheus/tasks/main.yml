@@ -26,19 +26,19 @@
     owner: "{{ user }}"
     mode: "700"
 
-- name: Copy private key
+- name: Copy SSL key
   copy:
-    src: "{{ key_filename }}"
-    dest: "/home/{{ user }}/{{ key_filename }}"
+    src: key.pem
+    dest: "{{ prometheus_ssl_key_path }}"
     group: "{{ user }}"
     owner: "{{ user }}"
     mode: "600"
   register: ssl_private
 
-- name: Copy certificate
+- name: Copy SSL certificate
   copy:
-    src: "{{ certificate_filename }}"
-    dest: "/home/{{ user }}/{{ certificate_filename }}"
+    src: certificate.pem
+    dest: "{{ prometheus_ssl_cert_path }}"
     group: "{{ user }}"
     owner: "{{ user }}"
     mode: "600"
@@ -69,8 +69,8 @@
     files:
       - web-config.yml
       - config.yml
-      - "{{ certificate_filename }}"
-      - "{{ key_filename }}"
+      - "{{ prometheus_ssl_cert_filename }}"
+      - "{{ prometheus_ssl_key_filename }}"
       - "{{ downloads[arch.stdout].directory }}"
       - data
 
@@ -90,4 +90,5 @@
     name: prometheus.service
     state: restarted
     enabled: yes
+  when: systemd.changed or download.changed or config.changed or web.changed or ssl_private.changed or ssl_cert.changed
   when: systemd.changed or download.changed or config.changed or web.changed or ssl_private.changed or ssl_cert.changed

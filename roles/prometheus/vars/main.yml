@@ -36,8 +36,11 @@ prometheus_port: !vault |
   6666363932366563630a343333633861376233376466656664353033393431306436306463353965
   3234
 
-certificate_filename: cert.pem
-key_filename: key.pem
+prometheus_ssl_cert_filename: cert.pem
+prometheus_ssl_key_filename: key.pem
+
+prometheus_ssl_cert_path: /home/{{ user }}/{{ prometheus_ssl_cert_filename }}
+prometheus_ssl_key_path: /home/{{ user }}/{{ prometheus_ssl_key_filename }}
 
 # parameters for https://prometheus.io/docs/practices/remote_write
 remote:

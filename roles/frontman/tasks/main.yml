@@ -59,7 +59,6 @@
     secret: "{{ item.secret }}"
     prefix: "POST"
     uuid: "{{ item.uuid }}"
-  no_log: true
 
 - name: Synchronize local static root with remote host
   synchronize:

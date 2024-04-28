@@ -16,4 +16,3 @@
         state: absent
       when: item.path | basename not in files
       with_items: "{{ existing.files | default([ ]) }}"
-      no_log: true

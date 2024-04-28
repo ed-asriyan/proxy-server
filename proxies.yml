@@ -1,5 +1,6 @@
 - hosts:
     - s1
+  no_log: true
   roles:
     - outline
     - prometheus

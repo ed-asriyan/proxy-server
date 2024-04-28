@@ -1,4 +1,5 @@
 - hosts:
     - frontman
+  no_log: true
   roles:
     - frontman

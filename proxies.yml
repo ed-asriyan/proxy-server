@@ -1,5 +1,5 @@
 - hosts:
-    - s1
+    - proxies
   no_log: true
   roles:
     - outline

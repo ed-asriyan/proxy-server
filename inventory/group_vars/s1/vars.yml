@@ -17,7 +17,4 @@ ansible_user: !vault |
   3637343263623330360a303939393130343039383963336431616663353037316261333330396630
   3131
 
-server: "{{ servers.s1 }}"
-
-ssl_cert_path: "/etc/letsencrypt/live/{{ server.domain }}/fullchain.pem"
-ssl_key_path: "/etc/letsencrypt/live/{{ server.domain }}/privkey.pem"
+server: "{{ servers[0] }}"

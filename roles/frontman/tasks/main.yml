@@ -55,10 +55,12 @@
     src: config.json.j2
     dest: "{{ static_root_local }}/{{ item.uuid }}"
   with_items: "{{ clients }}"
+  loop_control:
+    index_var: loop_index
   vars:
-    secret: "{{ item.secret }}"
+    client: "{{ item }}"
     prefix: "POST"
-    uuid: "{{ item.uuid }}"
+    default_server: "{{ servers[loop_index % (servers | length)] }}"
 
 - name: Synchronize local static root with remote host
   synchronize:

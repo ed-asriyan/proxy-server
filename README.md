@@ -34,21 +34,9 @@ permissions to read/write it: `chmod 600 id_rsa`!**
 Users are stored in [encrypted users.yml file](inventory/group_vars/all/users.yml) with the following schema:
 ```yaml
 users:
-  user1_name:
-    - uuid: user1_uuid1
-      secret: user1_secret1
-    - uuid: user1_uuid2
-      secret: user1_secret2
-  user2_name:
-    - uuid: user2_uuid1
-      secret: user2_secret1
-    - uuid: user2_uuid2
-      secret: user2_secret2
-    - uuid: user2_uuid1
-      secret: user2_secret3
-  user3_name:
-    - uuid: user3_uuid1
-      secret: user3_secret1
+  user1_name: user1_uuid
+  user2_name: user2_uuid
+  user3_name: user3_uuid
 ```
 
 To create a new user, you should:

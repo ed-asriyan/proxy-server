@@ -30,4 +30,4 @@ deploy_proxies:
 	ansible-playbook --vault-password-file $(VAULT_FILE) $(PLAYBOOK_FILE_PROXIES)
 
 generate_user:
-	echo "    - uuid: $$(uuidgen | tr '[:upper:]' '[:lower:]')\n      secret: $$(openssl rand -base64 15)"
+	echo "  user_name: $$(uuidgen | tr '[:upper:]' '[:lower:]')"

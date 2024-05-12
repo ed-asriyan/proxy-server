@@ -4,7 +4,7 @@
 servers:
   - uuid: 7e24bc5f-3495-4773-a60c-0cf748383aa9
     # domain of server that will be put into config
-    domain: !vault |
+    host: !vault |
       $ANSIBLE_VAULT;1.1;AES256
       61373932633565623362373062346266313537623233353166333735646463363564616630386237
       3731386535333063376264653835363236663633643531660a363263383061633234393136623862
@@ -13,6 +13,6 @@ servers:
       3564
     remarks: "Server #1"
     # port of shadowsocks to be exposed and used publicly
-    ss_port: 443
+    port: 443
     # cipher to use in shadowsocks
-    ss_cipher: chacha20-ietf-poly1305
+    method: chacha20-ietf-poly1305

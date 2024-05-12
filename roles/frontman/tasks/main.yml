@@ -8,7 +8,7 @@
 
 - set_fact:
     static_root_local: "/tmp/{{ static_folder }}"
-    instruction_filename: "{{ ansible_date_time.iso8601_micro | to_uuid }}.html"
+    instruction_filename: "{{ lookup('community.general.random_string', length=32, special=False) }}.html"
 
 - set_fact:
     instruction_url: "https://{{ frontman_domain }}:{{ frontman_port }}/{{ instruction_filename }}"
@@ -45,21 +45,17 @@
   include_vars:
     file: inventory/group_vars/all/users.yml
 
-- set_fact:
-    clients: "{{ users | dict2items | map(attribute='value') | flatten }}"
-
 - name: Render configs
   delegate_to: localhost
   become: false
   template:
     src: config.json.j2
-    dest: "{{ static_root_local }}/{{ item.uuid }}"
-  with_items: "{{ clients }}"
+    dest: "{{ static_root_local }}/{{ item.value }}"
+  with_items: "{{ users | dict2items }}"
   loop_control:
     index_var: loop_index
   vars:
-    client: "{{ item }}"
-    prefix: "POST"
+    user_uuid: "{{ item.value }}"
     default_server: "{{ servers[loop_index % (servers | length)] }}"
 
 - name: Synchronize local static root with remote host

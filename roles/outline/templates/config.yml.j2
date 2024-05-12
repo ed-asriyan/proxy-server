@@ -1,9 +1,7 @@
 keys:
-{% for ss_username in users.keys() %}
-{% for ss_client in users[ss_username] %}
-  - cipher: {{ server.ss_cipher }}
-    id: '{{ ss_username }}-{{ loop.index }}'
-    port: {{ server.ss_port }}
-    secret: {{ ss_client.secret }}
-{% endfor %}
+{% for user in users | dict2items %}
+  - cipher: {{ server.method }}
+    id: {{ user.key }}
+    port: {{ server.port }}
+    secret: {{ (user.value + server.port | string + server.method + server.uuid | string) | hash('sha512') }}
 {% endfor %}

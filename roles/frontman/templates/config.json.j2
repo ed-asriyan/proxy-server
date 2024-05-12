@@ -5,10 +5,10 @@
             {
                 "id": "{{ server.uuid }}",
                 "remarks": "{{ server.remarks }}",
-                "server": "{{ server.domain }}",
-                "server_port": {{ server.ss_port }},
-                "password": "{{ client.secret }}",
-                "method": "{{ server.ss_cipher }}"
+                "server": "{{ server.host }}",
+                "server_port": {{ server.port }},
+                "password": "{{ (user_uuid + server.port | string + server.method + server.uuid | string) | hash('sha512') }}",
+                "method": "{{ server.method }}"
             }
             {% if not loop.last %}
             ,
@@ -16,13 +16,13 @@
         {% endfor %}
     ],
 
-    "instruction_url": "https://{{ frontman_domain }}:{{ frontman_port }}/{{ instruction_filename }}#{{ client.uuid }}",
+    "instruction_url": "https://{{ frontman_domain }}:{{ frontman_port }}/{{ instruction_filename }}#{{ user_uuid }}",
 
     "comment": "the fields below are specifically for Outline client as it does not support the latest version of SIP008",
 
-    "method": "{{ default_server.ss_cipher }}",
-    "password": "{{ client.secret }}",
-    "prefix": "{{ prefix }}",
-    "server":"{{ default_server.domain }}",
-    "server_port":"{{ default_server.ss_port }}"
+    "method": "{{ default_server.method }}",
+    "password": "{{ (user_uuid + default_server.port | string + default_server.method + default_server.uuid | string) | hash('sha512') }}",
+    "prefix": "POST",
+    "server":"{{ default_server.host }}",
+    "server_port":"{{ default_server.port }}"
 }

@@ -3,4 +3,5 @@
   no_log: true
   roles:
     - shadowsocks
+    - shadowsocks-gateway
     - prometheus

@@ -4,19 +4,38 @@ This is deployment for my personal server with [outline](http://getoutline.org)/
 ## Shadowsocks clients that work with this setup
 https://getoutline.org/get-started/#step-3
 
-# Architecture diagram
+# Architecture
 ![digram](./diagram.svg)
 
-**Frontman** is linux host seith static server serving via HTTPS
-* Static html pages with installation instructions
-* Dynamic ShadowSocks configuration ([SIP008](https://shadowsocks.org/doc/sip008.html))
+There are two types of hosts: **frontman** and **proxy**. Frontman should be deployed as a single instance (sharding
+under single DNS record and/or IP address is allowed). Proxies could be deployed as many instances as needed, each instance
+should have dedicated IP address and DNS record (if exists). All hosts should be Debian hosts with public IPs.
 
-**Proxy 1..N** are linux hosts with installed
-* [outline-ss-server](https://github.com/Jigsaw-Code/outline-ss-server): shadowsocks implementation made by https://jigsaw.google.com that supports multiple access keys
+## Frontman
+It is a single linux host with the following tools installed and configured:
+* [nginx](https://nginx.org) serving static content over HTTPS:
+   * static html pages with installation instructions. The user is provided with a private instruction link with a personal ShadowSocks configuration, which the user uses once to install the ShadowSocks configuration
+   * personal dynamic ShadowSocks configuration json files ([SIP008](https://shadowsocks.org/doc/sip008.html)) for each client, which is used by ShadowSocks client each time before connecting to a ShadowSocks server
+* [certbot](https://certbot.eff.org) for automatic and free renewal of HTTPS certificates used by nginx
+
+Playbook: [frontman.yml](./frontman.yml)
+
+## Proxy
+As many proxy hosts as needed could be deployed but each one should have its own IP address and/or DNS record.
+Proxy(ies) is/are linux host(s) with installed
+* [nginx](https://nginx.org) that proxies traffic:
+  * if connection is recognized as TLS, request is handled as HTTPS connection
+  * otherwise; connection is proxied to ShadoSocks server
+* [outline-ss-server](https://github.com/Jigsaw-Code/outline-ss-server): Shadowsocks implementation made by
+https://jigsaw.google.com that supports multiple access keys
 * [prometheus](https://prometheus.io): monitoring to detect traffic abuse
+* [node-exporter](https://github.com/prometheus/node_exporter): Prometheus exporter for hardware and OS metrics
 
-# Setup
-This part requires [Ansible](https://www.ansible.com) knowledge.
+Playbook: [proxies.yml](./proxies.yml)
+
+# Development
+This part requires [Ansible](https://www.ansible.com) knowledge. The deployment is tested on and implemented for Debian
+only.
 
 ## At the very beginning
 1. Initialize pre-commit hook to prevent secrets from being leaked:

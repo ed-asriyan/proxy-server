@@ -1,0 +1,38 @@
+# http://nginx.org/en/linux_packages.html#Debian
+
+- name: Check if nginx is installed
+  shell: nginx -v
+  register: nginx_installed
+  ignore_errors: yes
+
+- name: Install the prerequisites
+  with_items:
+    - curl
+    - gnupg2
+    - ca-certificates
+    - lsb-release
+    - debian-archive-keyring
+  package:
+    name: "{{ item }}"
+    state: present
+  when: nginx_installed.failed
+
+- name: Import an official nginx signing key so apt could verify the packages authenticity
+  command: bash -c "curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor | tee /usr/share/keyrings/nginx-archive-keyring.gpg > /dev/null"
+  when: nginx_installed.failed
+
+- name: Set up the apt repository for stable nginx packages
+  command: bash -c "echo 'deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/debian `lsb_release -cs` nginx' | tee /etc/apt/sources.list.d/nginx.list"
+  when: nginx_installed.failed
+
+- name: Install nginx
+  package:
+    name: nginx
+    state: present
+  when: nginx_installed.failed
+
+- name: Stop nginx
+  systemd:
+    name: nginx.service
+    state: stopped
+    enabled: false

@@ -1,0 +1,11 @@
+[Unit]
+Description=shadowsocks-gateway
+After=shadowsocks.service
+
+[Service]
+User=root
+ExecStart=nginx -c /home/{{ shadowsocks_gateway_user }}/nginx.conf
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

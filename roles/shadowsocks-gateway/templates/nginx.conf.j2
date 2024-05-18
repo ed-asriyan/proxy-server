@@ -1,0 +1,40 @@
+load_module /usr/lib/nginx/modules/ngx_stream_module.so;
+daemon off;
+worker_processes auto;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    server {
+        listen 80 default_server;
+        server_name _;
+        return 301 https://{{ shadowsocks_gateway_fallback_proxy_target }};
+    }
+}
+
+stream {
+    map $ssl_preread_protocol $backend {
+        default shadowsocks_backend;
+        "TLSv1.0" https_backend;
+        "TLSv1.2" https_backend;
+        "TLSv1.3" https_backend;
+    }
+
+    upstream https_backend {
+        server {{ shadowsocks_gateway_fallback_proxy_target }};
+    }
+
+    upstream shadowsocks_backend {
+        server localhost:{{ shadowsocks_port }};
+    }
+
+    server {
+        listen {{ server.port }};
+        proxy_timeout 5s;
+        ssl_preread on;
+
+        proxy_pass $backend;
+    }
+}

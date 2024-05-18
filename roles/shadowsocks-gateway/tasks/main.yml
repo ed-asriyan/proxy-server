@@ -1,0 +1,41 @@
+- name: Install libnginx-mod-stream
+  package:
+    name: libnginx-mod-stream
+    state: present
+
+- name: Create user
+  user: name={{ shadowsocks_gateway_user }}
+
+- name: Render nginx config
+  template:
+    src: nginx.conf.j2
+    dest: "/home/{{ shadowsocks_gateway_user }}/nginx.conf"
+    group: "{{ shadowsocks_gateway_user }}"
+    owner: "{{ shadowsocks_gateway_user }}"
+    mode: "600"
+  register: config
+
+- name: Remove unexpected files in home
+  include_tasks: tasks/remove-unexpected-files.yml
+  vars:
+    directory: "/home/{{ shadowsocks_gateway_user }}"
+    files:
+      - nginx.conf
+
+- name: Render systemd service config
+  template:
+    src: shadowsocks-gateway.service.j2
+    dest: /etc/systemd/system/shadowsocks-gateway.service
+  register: systemd
+
+- name: Reload daemon
+  systemd:
+    daemon_reload: yes
+  when: systemd.changed
+
+- name: Restart systemd app service
+  systemd:
+    name: shadowsocks-gateway.service
+    state: restarted
+    enabled: yes
+  when: systemd.changed or config.changed

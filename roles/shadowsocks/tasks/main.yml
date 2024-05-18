@@ -1,9 +1,9 @@
 - name: Create user
-  user: name={{ user }}
+  user: name={{ shadowsocks_user }}
 
 - name: Get MD5 checksum of outline executable
   stat:
-    path: "/home/{{ user }}/{{ executable_name }}"
+    path: "/home/{{ shadowsocks_user }}/{{ shadowsocks_executable_name }}"
     checksum_algorithm: md5
   register: file_stat
 
@@ -13,20 +13,20 @@
   register: arch
 
 - name: Download & extract outline executable
-  when: "file_stat.stat.exists == false or file_stat.stat.checksum != downloads[arch.stdout].md5"
+  when: "file_stat.stat.exists == false or file_stat.stat.checksum != shadowsocks_downloads[arch.stdout].md5"
   unarchive:
-    src: "{{ downloads[arch.stdout].url }}"
-    dest: "/home/{{ user }}"
+    src: "{{ shadowsocks_downloads[arch.stdout].url }}"
+    dest: "/home/{{ shadowsocks_user }}"
     remote_src: yes
     extra_opts:
-      - "{{ executable_name }}"
+      - "{{ shadowsocks_executable_name }}"
   register: download
 
 - name: Set executable ownership, group and permissions
   file:
-    path: "/home/{{ user }}/{{ executable_name }}"
-    group: "{{ user }}"
-    owner: "{{ user }}"
+    path: "/home/{{ shadowsocks_user }}/{{ shadowsocks_executable_name }}"
+    group: "{{ shadowsocks_user }}"
+    owner: "{{ shadowsocks_user }}"
     mode: "700"
 
 - name: Include users variables
@@ -36,24 +36,24 @@
 - name: Render outline-ss-server config
   template:
     src: config.yml.j2
-    dest: "/home/{{ user }}/config.yml"
-    group: "{{ user }}"
-    owner: "{{ user }}"
+    dest: "/home/{{ shadowsocks_user }}/config.yml"
+    group: "{{ shadowsocks_user }}"
+    owner: "{{ shadowsocks_user }}"
     mode: "600"
   register: config
 
 - name: Remove unexpected files in home
   include_tasks: tasks/remove-unexpected-files.yml
   vars:
-    directory: "/home/{{ user }}"
+    directory: "/home/{{ shadowsocks_user }}"
     files:
       - config.yml
-      - "{{ executable_name }}"
+      - "{{ shadowsocks_executable_name }}"
 
 - name: Render systemd service config
   template:
-    src: outline.service.j2
-    dest: /etc/systemd/system/outline.service
+    src: shadowsocks.service.j2
+    dest: /etc/systemd/system/shadowsocks.service
   register: systemd
 
 - name: Reload daemon
@@ -63,7 +63,7 @@
 
 - name: Restart systemd app service
   systemd:
-    name: outline.service
+    name: shadowsocks.service
     state: restarted
     enabled: yes
   when: systemd.changed or download.changed or config.changed

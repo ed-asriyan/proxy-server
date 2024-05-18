@@ -1,5 +1,5 @@
 - name: Create user
-  user: name={{ user }}
+  user: name={{ prometheus_user }}
 
 - name: Detect arch
   command: uname -m
@@ -8,30 +8,30 @@
 
 - name: Know if the directory exists
   stat:
-    path: "/home/{{ user }}/{{ downloads[arch.stdout].directory }}"
+    path: "/home/{{ prometheus_user }}/{{ prometheus_downloads[arch.stdout].directory }}"
   register: file_stat
 
 - name: Download & extract prometheus
   when: "file_stat.stat.exists == false"
   unarchive:
-    src: "{{ downloads[arch.stdout].url }}"
-    dest: "/home/{{ user }}"
+    src: "{{ prometheus_downloads[arch.stdout].url }}"
+    dest: "/home/{{ prometheus_user }}"
     remote_src: yes
   register: download
 
 - name: Set prometheus ownership, group and permissions
   file:
-    path: "/home/{{ user }}/{{ downloads[arch.stdout].directory }}/{{ executable_name }}"
-    group: "{{ user }}"
-    owner: "{{ user }}"
+    path: "/home/{{ prometheus_user }}/{{ prometheus_downloads[arch.stdout].directory }}/{{ prometheus_executable_name }}"
+    group: "{{ prometheus_user }}"
+    owner: "{{ prometheus_user }}"
     mode: "700"
 
 - name: Copy SSL key
   copy:
     src: key.pem
     dest: "{{ prometheus_ssl_key_path }}"
-    group: "{{ user }}"
-    owner: "{{ user }}"
+    group: "{{ prometheus_user }}"
+    owner: "{{ prometheus_user }}"
     mode: "600"
   register: ssl_private
 
@@ -39,39 +39,39 @@
   copy:
     src: certificate.pem
     dest: "{{ prometheus_ssl_cert_path }}"
-    group: "{{ user }}"
-    owner: "{{ user }}"
+    group: "{{ prometheus_user }}"
+    owner: "{{ prometheus_user }}"
     mode: "600"
   register: ssl_cert
 
 - name: Render prometheus config
   template:
     src: config.yml.j2
-    dest: "/home/{{ user }}/config.yml"
-    group: "{{ user }}"
-    owner: "{{ user }}"
+    dest: "/home/{{ prometheus_user }}/config.yml"
+    group: "{{ prometheus_user }}"
+    owner: "{{ prometheus_user }}"
     mode: "600"
   register: config
 
 - name: Render web config
   template:
     src: web-config.yml.j2
-    dest: "/home/{{ user }}/web-config.yml"
-    group: "{{ user }}"
-    owner: "{{ user }}"
+    dest: "/home/{{ prometheus_user }}/web-config.yml"
+    group: "{{ prometheus_user }}"
+    owner: "{{ prometheus_user }}"
     mode: "600"
   register: web
 
 - name: Remove unexpected files in home
   include_tasks: tasks/remove-unexpected-files.yml
   vars:
-    directory: "/home/{{ user }}"
+    directory: "/home/{{ prometheus_user }}"
     files:
       - web-config.yml
       - config.yml
       - "{{ prometheus_ssl_cert_filename }}"
       - "{{ prometheus_ssl_key_filename }}"
-      - "{{ downloads[arch.stdout].directory }}"
+      - "{{ prometheus_downloads[arch.stdout].directory }}"
       - data
 
 - name: Render systemd service config
@@ -90,5 +90,4 @@
     name: prometheus.service
     state: restarted
     enabled: yes
-  when: systemd.changed or download.changed or config.changed or web.changed or ssl_private.changed or ssl_cert.changed
   when: systemd.changed or download.changed or config.changed or web.changed or ssl_private.changed or ssl_cert.changed

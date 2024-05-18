@@ -1,7 +1,7 @@
-# linus user to run outline as
-user: outline
+# linux user to run shadowsocks server as
+shadowsocks_user: shadowsocks
 # URL to download outline from
-downloads:
+shadowsocks_downloads:
   x86_64:
     url: https://github.com/Jigsaw-Code/outline-ss-server/releases/download/v1.4.0/outline-ss-server_1.4.0_linux_x86_64.tar.gz
     md5: d0e6c3c845a9ee6d6bc8f4c4e9289b8a
@@ -12,8 +12,10 @@ downloads:
     url: https://github.com/Jigsaw-Code/outline-ss-server/releases/download/v1.4.0/outline-ss-server_1.4.0_linux_armv7.tar.gz
     md5: b17c75a6d3d2f35093d54ad3257f97db
 # name of outline executable file
-executable_name: outline-ss-server
+shadowsocks_executable_name: outline-ss-server
 # replay defense; see https://github.com/Jigsaw-Code/outline-ss-server/blob/master/service/PROBES.md for details
-replay_history: 10000
+shadowsocks_replay_history: 10000
 # port of metrics for prometheus to be exposed
-metrics_port: 9091
+shadowsocks_metrics_port: 9091
+# port of shadowsocks behind gateway
+shadowsocks_port: 443

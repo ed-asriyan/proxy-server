@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>
         const redirect = function (url) {
-            window.location.href = url || "{{ default_redirect }}";
+            window.location.href = url || "{{ frontman_default_redirect }}";
         };
 
         window.onload = function () {

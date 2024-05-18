@@ -1,20 +1,20 @@
 - name: Create user
-  user: name={{ user }}
+  user: name={{ dynamic_dns_user }}
 
 - name: Copy sync script
   copy:
     src: sync-ip.sh
-    dest: "/home/{{ user }}/{{ executable_name }}"
-    group: "{{ user }}"
-    owner: "{{ user }}"
+    dest: "/home/{{ dynamic_dns_user }}/{{ dynamic_dns_executable_name }}"
+    group: "{{ dynamic_dns_user }}"
+    owner: "{{ dynamic_dns_user }}"
     mode: "700"
 
 - name: Remove unexpected files in home
   include_tasks: tasks/remove-unexpected-files.yml
   vars:
-    directory: "/home/{{ user }}"
+    directory: "/home/{{ dynamic_dns_user }}"
     files:
-      - "{{ executable_name }}"
+      - "{{ dynamic_dns_executable_name }}"
 
 - name: Render systemd service config
   template:

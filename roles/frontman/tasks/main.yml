@@ -4,10 +4,10 @@
     state: present
 
 - name: Create user
-  user: name={{ user }}
+  user: name={{ frontman_user }}
 
 - set_fact:
-    static_root_local: "/tmp/{{ static_folder }}"
+    static_root_local: "/tmp/{{ frontman_static_folder }}"
     instruction_filename: "{{ lookup('community.general.random_string', length=32, special=False) }}.html"
 
 - set_fact:
@@ -61,7 +61,7 @@
 - name: Synchronize local static root with remote host
   synchronize:
     src: "{{ static_root_local }}"
-    dest: "/home/{{ user }}"
+    dest: "/home/{{ frontman_user }}"
     recursive: yes
     archive: no
     checksum: yes
@@ -83,7 +83,7 @@
 
 - name: Get MD5 checksum of serve executable
   stat:
-    path: "/home/{{ user }}/{{ executable_name }}"
+    path: "/home/{{ frontman_user }}/{{ frontman_executable_name }}"
     checksum_algorithm: md5
   register: file_stat
 
@@ -93,28 +93,28 @@
   register: arch
 
 - name: Download & extract serve executable
-  when: "file_stat.stat.exists == false or file_stat.stat.checksum != downloads[arch.stdout].md5"
+  when: "file_stat.stat.exists == false or file_stat.stat.checksum != frontman_downloads[arch.stdout].md5"
   unarchive:
-    src: "{{ downloads[arch.stdout].url }}"
-    dest: "/home/{{ user }}"
+    src: "{{ frontman_downloads[arch.stdout].url }}"
+    dest: "/home/{{ frontman_user }}"
     remote_src: yes
     extra_opts:
-      - "{{ executable_name }}"
+      - "{{ frontman_executable_name }}"
   register: download
 
 - name: Set executable ownership, group and permissions
   file:
-    path: "/home/{{ user }}/{{ executable_name }}"
-    group: "{{ user }}"
-    owner: "{{ user }}"
+    path: "/home/{{ frontman_user }}/{{ frontman_executable_name }}"
+    group: "{{ frontman_user }}"
+    owner: "{{ frontman_user }}"
     mode: "700"
 
 - name: Copy SSL key
   copy:
     src: "{{ ssl_key_path }}"
     dest: "{{ frontman_ssl_key_path }}"
-    group: "{{ user }}"
-    owner: "{{ user }}"
+    group: "{{ frontman_user }}"
+    owner: "{{ frontman_user }}"
     mode: "600"
     remote_src: yes
   register: ssl_private
@@ -123,8 +123,8 @@
   copy:
     src: "{{ ssl_cert_path }}"
     dest: "{{ frontman_ssl_cert_path }}"
-    group: "{{ user }}"
-    owner: "{{ user }}"
+    group: "{{ frontman_user }}"
+    owner: "{{ frontman_user }}"
     mode: "600"
     remote_src: yes
   register: ssl_cert
@@ -132,10 +132,10 @@
 - name: Remove unexpected files in home
   include_tasks: tasks/remove-unexpected-files.yml
   vars:
-    directory: "/home/{{ user }}"
+    directory: "/home/{{ frontman_user }}"
     files:
-      - "{{ static_folder }}"
-      - "{{ executable_name }}"
+      - "{{ frontman_static_folder }}"
+      - "{{ frontman_executable_name }}"
       - "{{ frontman_ssl_cert_filename }}"
       - "{{ frontman_ssl_key_filename }}"
 

@@ -1,8 +1,8 @@
-# linus user to run prometheus as
-user: node_exporter
+# linus user to run node-exporter as
+node_exporter_user: node_exporter
 
 # URL to download outline from
-downloads:
+node_exporter_downloads:
   x86_64:
     url: https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz
     md5: 94194e281f7d67de9a06838ea1dd7d7e
@@ -16,6 +16,6 @@ downloads:
     md5: b5c74984325b6b84d20a16daf24b0ee3
     directory: node_exporter-1.7.0.linux-armv7
 # name of node-exporter executable file
-executable_name: node_exporter
+node_exporter_executable_name: node_exporter
 # port for node-exporter dependency
 node_exporter_port: 9092

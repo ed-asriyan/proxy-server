@@ -1,7 +1,7 @@
 # linus user to run frontman as
-user: frontman
+frontman_user: frontman
 # URL to download outline from
-downloads:
+frontman_downloads:
   x86_64:
     url: https://github.com/syntaqx/serve/releases/download/v0.5.0/serve_0.5.0_linux_x86_64.tar.gz
     md5: b20d486c14c65883bb70284d3bdca010
@@ -12,13 +12,13 @@ downloads:
     url: https://github.com/syntaqx/serve/releases/download/v0.5.0/serve_0.5.0_linux_armv6.tar.gz
     md5: d3bad027c9ad4403de9293b200317259
 # name of outline executable file
-executable_name: serve
+frontman_executable_name: serve
 # port, configs should be served on
 frontman_port: 1399
 # relative path of directory where static content should be stored
-static_folder: static
+frontman_static_folder: static
 # where redirect to if user opened index page without paramneters
-default_redirect: !vault |
+frontman_default_redirect: !vault |
   $ANSIBLE_VAULT;1.1;AES256
   34653931636161663935663035336435336238646530363730636237336266663637616338643535
   3538363838646330333836393632633631636539343734650a623666633838316166333966363938
@@ -29,5 +29,5 @@ default_redirect: !vault |
 frontman_ssl_cert_filename: cert.pem
 frontman_ssl_key_filename: key.pem
 
-frontman_ssl_cert_path: /home/{{ user }}/{{ frontman_ssl_cert_filename }}
-frontman_ssl_key_path: /home/{{ user }}/{{ frontman_ssl_key_filename }}
+frontman_ssl_cert_path: /home/{{ frontman_user }}/{{ frontman_ssl_cert_filename }}
+frontman_ssl_key_path: /home/{{ frontman_user }}/{{ frontman_ssl_key_filename }}

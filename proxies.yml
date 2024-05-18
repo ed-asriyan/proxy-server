@@ -2,5 +2,5 @@
     - proxies
   no_log: true
   roles:
-    - outline
+    - shadowsocks
     - prometheus

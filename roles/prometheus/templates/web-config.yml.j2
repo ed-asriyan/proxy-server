@@ -3,4 +3,4 @@ tls_server_config:
   key_file: {{ prometheus_ssl_key_path }}
 
 basic_auth_users:
-  {{ username }}: {{ password_bcrypt }}
+  {{ prometheus_username }}: {{ prometheus_password_bcrypt }}

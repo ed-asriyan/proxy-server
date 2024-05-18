@@ -4,7 +4,7 @@ scrape_configs:
   - job_name: outline-server-ss
     static_configs:
       - targets:
-          - '127.0.0.1:{{ metrics_port }}'
+          - '127.0.0.1:{{ shadowsocks_metrics_port }}'
         labels:
           instance: '{{ server.uuid }}'
   - job_name: node-exporter
@@ -14,7 +14,7 @@ scrape_configs:
         labels:
           instance: '{{ server.uuid }}'
 remote_write:
-  - url: {{ remote.url }}
+  - url: {{ prometheus_remote.url }}
     basic_auth:
-      username: {{ remote.username }}
-      password: {{ remote.password }}
+      username: {{ prometheus_remote.username }}
+      password: {{ prometheus_remote.password }}

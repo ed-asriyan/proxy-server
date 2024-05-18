@@ -2,6 +2,6 @@ keys:
 {% for user in users | dict2items %}
   - cipher: {{ server.method }}
     id: {{ user.key }}
-    port: {{ server.port }}
+    port: {{ shadowsocks_port }}
     secret: {{ (user.value + server.port | string + server.method + server.uuid | string) | hash('sha512') }}
 {% endfor %}

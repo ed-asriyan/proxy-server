@@ -5,8 +5,8 @@ Requires=dynamic-dns.timer
 
 [Service]
 Type=simple
-User={{ user }}
-ExecStart=/home/{{ user }}/{{ executable_name }} "{{ domain }}" "{{ record }}" "{{ godaddy_api_key }}"
+User={{ dynamic_dns_user }}
+ExecStart=/home/{{ dynamic_dns_user }}/{{ dynamic_dns_executable_name }} "{{ domain }}" "{{ record }}" "{{ dynamic_dns_godaddy_api_key }}"
 
 [Install]
 WantedBy=multi-user.target

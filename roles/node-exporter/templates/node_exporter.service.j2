@@ -2,9 +2,9 @@
 Description=node_exporter
 
 [Service]
-User={{ user }}
-WorkingDirectory=/home/{{ user }}
-ExecStart=/home/{{ user }}/{{ downloads[arch.stdout].directory }}/{{ executable_name }} --web.listen-address=:{{ node_exporter_port }}
+User={{ node_exporter_user }}
+WorkingDirectory=/home/{{ node_exporter_user }}
+ExecStart=/home/{{ node_exporter_user }}/{{ node_exporter_downloads[arch.stdout].directory }}/{{ node_exporter_executable_name }} --web.listen-address=:{{ node_exporter_port }}
 Restart=always
 
 [Install]

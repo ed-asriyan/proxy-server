@@ -1,0 +1,12 @@
+[Unit]
+Description=shadowsocks
+After=network.service
+
+[Service]
+User={{ shadowsocks_user }}
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+ExecStart=/home/{{ shadowsocks_user }}/{{ shadowsocks_executable_name }} -replay_history={{ shadowsocks_replay_history }} -config /home/{{ shadowsocks_user }}/config.yml -metrics 127.0.0.1:{{ shadowsocks_metrics_port }}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

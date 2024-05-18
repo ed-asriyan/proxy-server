@@ -3,9 +3,9 @@ Description=prometheus
 After=outline.service
 
 [Service]
-User={{ user }}
-WorkingDirectory=/home/{{ user }}
-ExecStart=/home/{{ user }}/{{ downloads[arch.stdout].directory }}/{{ executable_name }} --config.file /home/{{ user }}/config.yml --web.listen-address 0.0.0.0:{{ prometheus_port }} --web.external-url https://{{ server.host }}:{{ prometheus_port }} --web.config.file /home/{{ user }}/web-config.yml --storage.tsdb.retention.time {{ retention }}
+User={{ prometheus_user }}
+WorkingDirectory=/home/{{ prometheus_user }}
+ExecStart=/home/{{ prometheus_user }}/{{ prometheus_downloads[arch.stdout].directory }}/{{ prometheus_executable_name }} --config.file /home/{{ prometheus_user }}/config.yml --web.listen-address 0.0.0.0:{{ prometheus_port }} --web.external-url https://{{ server.host }}:{{ prometheus_port }} --web.config.file /home/{{ prometheus_user }}/web-config.yml --storage.tsdb.retention.time {{ prometheus_retention }}
 Restart=always
 
 [Install]

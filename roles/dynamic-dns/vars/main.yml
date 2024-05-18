@@ -1,7 +1,7 @@
 # linux user to run scrips on behalf of
-user: dynamic-dns
+dynamic_dns_user: dynamic-dns
 
-godaddy_api_key: !vault |
+dynamic_dns_godaddy_api_key: !vault |
   $ANSIBLE_VAULT;1.1;AES256
   66343930313362623235306462336631666536343730343933316334623762643035323636613866
   3462356132376531326232656638633930636166333466640a396137656163643766373431333335
@@ -12,7 +12,7 @@ godaddy_api_key: !vault |
   376661623362646566326663373531376238
 
 # name of sync-ip script file
-executable_name: sync-ip.sh
+dynamic_dns_executable_name: sync-ip.sh
 
 # frequency of dns check. in OnUnitActiveSec format (systemd)
-repeat_interval: 10min
+dynamic_dns_repeat_interval: 10min

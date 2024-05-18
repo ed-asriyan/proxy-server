@@ -1,7 +1,7 @@
 # linus user to run prometheus as
-user: prometheus
+prometheus_user: prometheus
 # URL to download prometheus from
-downloads:
+prometheus_downloads:
   x86_64:
     url: https://github.com/prometheus/prometheus/releases/download/v2.46.0/prometheus-2.46.0.linux-amd64.tar.gz
     directory: prometheus-2.46.0.linux-amd64
@@ -11,11 +11,11 @@ downloads:
   armv7l:
     url: https://github.com/prometheus/prometheus/releases/download/v2.47.2/prometheus-2.47.2.linux-armv7.tar.gz
     directory: prometheus-2.47.2.linux-armv7
-executable_name: prometheus
+prometheus_executable_name: prometheus
 # username for authentication
-username: admin
+prometheus_username: admin
 # bcrypt'ed password for authentication
-password_bcrypt: !vault |
+prometheus_password_bcrypt: !vault |
   $ANSIBLE_VAULT;1.1;AES256
   36633036313333383539656230393164343265613835306233386233343139623636366166343162
   3339366338663066346134363236336630313135353837650a623734376661373865356233313538
@@ -26,7 +26,7 @@ password_bcrypt: !vault |
   323932653239643665356636653563396231
 
 # how long prometheus should store metrics data
-retention: 365d
+prometheus_retention: 365d
 # port of prometheus to be exposed and used publicly
 prometheus_port: !vault |
   $ANSIBLE_VAULT;1.1;AES256
@@ -39,11 +39,11 @@ prometheus_port: !vault |
 prometheus_ssl_cert_filename: cert.pem
 prometheus_ssl_key_filename: key.pem
 
-prometheus_ssl_cert_path: /home/{{ user }}/{{ prometheus_ssl_cert_filename }}
-prometheus_ssl_key_path: /home/{{ user }}/{{ prometheus_ssl_key_filename }}
+prometheus_ssl_cert_path: /home/{{ prometheus_user }}/{{ prometheus_ssl_cert_filename }}
+prometheus_ssl_key_path: /home/{{ prometheus_user }}/{{ prometheus_ssl_key_filename }}
 
 # parameters for https://prometheus.io/docs/practices/remote_write
-remote:
+prometheus_remote:
   url: !vault |
     $ANSIBLE_VAULT;1.1;AES256
     66303163663237383132306366643564313632396237636138356563373234356338616430663066

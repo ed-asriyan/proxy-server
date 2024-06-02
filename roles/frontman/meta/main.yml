@@ -4,3 +4,4 @@ dependencies:
       certbot_domain: "{{ frontman_domain }}"
       certbot_service_name: "frontman-certbot"
       certbot_post_hook: "cp {{ ssl_cert_path }} {{ frontman_ssl_cert_path }} && cp {{ ssl_key_path }} {{ frontman_ssl_key_path }} && systemctl restart frontman"
+  - role: nginx

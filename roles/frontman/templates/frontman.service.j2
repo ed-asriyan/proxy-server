@@ -3,9 +3,8 @@ Description=frontman
 After=network.service
 
 [Service]
-User={{ frontman_user }}
-WorkingDirectory=/home/{{ frontman_user }}
-ExecStart=/home/{{ frontman_user }}/{{ frontman_executable_name }} --dir /home/{{ frontman_user }}/{{ frontman_static_folder }} --host 0.0.0.0 --port {{ frontman_port }} --ssl --cert {{ frontman_ssl_cert_filename }} --key {{ frontman_ssl_key_filename }}
+User=root
+ExecStart=nginx -c /home/{{ frontman_user }}/nginx.conf
 Restart=always
 
 [Install]

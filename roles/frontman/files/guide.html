@@ -6,44 +6,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>
         window.onload = function () {
-            var hash = parseHash();
+            const hash = parseHash();
 
             if (hash) {
                 render(hash);
             } else {
-                window.location.href = '/';
+                quit();
             }
         };
 
-        let _hash;
-        function parseHash() {
-            if (!_hash) {
-                _hash = window.location.hash.substring(1);
+        const parseHash = function() {
+            if (!parseHash.value) {
+                parseHash.value = window.location.hash.substring(1);
                 // invalidate location so that users cannot share personal links
-                window.history.replaceState({}, null, '/#do-not-share-your-personal-link');
+                window.location.hash = '#do-not-share-your-personal-link';
             }
-            return _hash;
+            return parseHash.value;
         }
 
-        function getSsConfig(hash) {
+        const quit = function () {
+            window.location.href = '/';
+        }
+
+        const getSsConfig = function(hash) {
             return fetch('/' + hash)
-                .then(response => response.json());
+                .then(response => response.json())
+                .catch(quit);
         }
 
-        function getSsConfUri(hash) {
+        const getSsConfUri = function(hash) {
             return 'ssconf://' + location.host + '/' + hash;
         }
 
-        function getSsUri(config) {
-            return 'ss://' + btoa(config.method + ':' + config.password) + '@' + config.server + ':' + config['server_port'];
+        const getSsUri = function(server) {
+            return 'ss://' + btoa(server.method + ':' + server.password) + '@' + server.server + ':' + server['server_port'];
         }
 
-        function getStraisandUri(conf) {
-            return 'streisand://import/' + getSsUri(conf);
+        const getStraisandUri = function(server) {
+            return 'streisand://import/' + getSsUri(server);
         }
 
-        function render(hash) {
-            var ssConfUri = getSsConfUri(hash);
+        const render = function(hash) {
+            const ssConfUri = getSsConfUri(hash);
             document.getElementById('connect_vpn').addEventListener('click', () => {
                 window.location.href = ssConfUri;
             });
@@ -54,40 +58,57 @@
                 background-color: white;
                 padding: 1rem;
             `;
-            document.getElementById('sip008').style = 'display: block';
             document.getElementById('sip008_uri').innerHTML = ssConfUri;
 
             getSsConfig(hash)
-                .then(config => {
-                    document.getElementById('nerd').style = 'display: block';
-                    var ssUri = getSsUri(config);
+                .then(renderStaticConfigurations)
+                .then(html => document.getElementById('nerd').innerHTML = html);
+        }
 
-                    document.getElementById('ss').style = 'display: block';
-                    document.getElementById('ss_uri').innerHTML = ssUri;
-                    document.getElementById('ss_connect').addEventListener('click', () => {
-                        window.location.href = ssUri;
-                    });
+        const renderStaticConfigurations = function(config) {
+            return `
+                <h2>Статические конфигурации</h2>
+                <p>
+                    Конфигурации ниже временные, пока не обновится динамический конфиг. Когда это произойдёт, впн перестанет работать.
+                    В этом случае нужно будет открыть эту страницу и перенастроить клиент с новыми параметрами. Конфиг обновиться может в любой момент.
+                </p>
+                ${config['servers'].map(renderStaticServerConfig).join('')}
+            `;
+        };
 
-                    var streisandUri = getStraisandUri(config);
-                    document.getElementById('streisand').style = 'display: block';
-                    document.getElementById('streisand_uri').innerHTML = streisandUri;
-                    document.getElementById('streisand_connect').addEventListener('click', () => {
-                        window.location.href = streisandUri;
-                    });
-
-                    document.getElementById('manual').style = 'display: block';
-                    document.getElementById('manual_server').innerHTML = config.server;
-                    document.getElementById('manual_port').innerHTML = config['server_port'];
-                    document.getElementById('manual_password').innerHTML = config.password;
-                    document.getElementById('manual_method').innerHTML = config.method;
-                });
+        const renderStaticServerConfig = function (server) {
+            const streisandUri = getStraisandUri(server);
+            const ssUri = getSsUri(server);
+            return `
+                <hr/>
+                <h3>${server['remarks']}</h3>
+                <div>
+                    <h4><a href="https://apps.apple.com/app/id6450534064">Streisand</a> (iOS & OS X only)</h4>
+                    <div style="text-align: center; margin: 1rem;">
+                        <button onClick="window.location.href = '${streisandUri}'">Подключить</button>
+                    </div>
+                    <code>${streisandUri}</code>
+                </div>
+                <div>
+                    <h4>Shadowsocks URI</h4>
+                    <div style="text-align: center; margin: 1rem;">
+                        <button onClick="window.location.href = '${ssUri}'">Подключить</button>
+                    </div>
+                    <code>${ssUri}</code>
+                </div>
+                <div>
+                    <h4>Ваще ручная настройка</h4>
+                    <ul>
+                        <li>Server: <code>${server['server']}</code></li>
+                        <li>Port: <code>${server['server_port']}</code></li>
+                        <li>Password: <code>${server['password']}</code></li>
+                        <li>Method: <code>${server['method']}</code></li>
+                    </ul>
+                </div>
+            `;
         }
     </script>
     <style>
-        h1, h2, h3 {
-            text-align: center;
-        }
-
         .download_link {
             max-width: 100%;
             cursor: pointer;
@@ -128,6 +149,10 @@
             font-size: 0.75rem;
         }
 
+        h1, h2, h3, h4, .text-center {
+            text-align: center;
+        }
+
         .connect-vpn {
             border: solid 2px red;
             border-radius: 1rem;
@@ -145,7 +170,8 @@
     </style>
 </head>
 <body id="body">
-    <p style="text-align: center;">Если ты читаешь этот текст, то у тебя есть персональный ВПН.<br/><b>Эта ссылка -- персональная, никому её не скидывай.</b></p>
+    <p class="text-center">Если ты читаешь этот текст, то у тебя есть персональный ВПН.</p>
+    <p class="text-center" style="color: blue;"><b>Эта ссылка — персональная, не публикуй её в интернете и не передавай её другим людям.</b></p>
 
     <section>
         <h1>Итак, как подключить впн:</h1>
@@ -206,6 +232,11 @@
         </p>
 
         <p>
+            <b>ВПН перестал работать/начал барахлить/не грузит/... Что делать?</b><br/>
+            Попробуйте отключиться от впн, закрыть Outline, открыть его и подключиться заново. Если не помогло, напишите <a href="https://t.me/ed_asriyan">@ed_asriyan</a> в личку и опишите проблему. Если можете сделать скриншот ошибки или запись экрана — вообще супер. Пожалуйста, опишите проблему сразу же в первом сообщении.
+        </p>
+
+        <p>
             <b>Отслеживаются ли данные о том какие сайты я посещаю, что смотрю, скачиваю и т.д.?</b><br/>
             Нет. Ничего не отслеживается и тем более не анализируется и не сохраняется. Логирование трафика не ведётся.
         </p>
@@ -238,43 +269,18 @@
 
     <section>
         <h1>Ручная настройка</h1>
-        <p>Если ты тоже задрот и дочитал до сюда, можешь настроить впн вручную. Для этого выбери способ и используй соответствующие параметры.</p>
-        <div id="sip008" style="display: none">
-            <h2>SIP008</h2>
+        <p>
+            Если ты тоже задрот и дочитал до сюда, можешь настроить впн вручную. Для этого выбери способ и используй соответствующие параметры. Существует 2 типа конфигураций: динамеческая (SIP008) и статическая.
+        </p>
+        <div>
+            <h2>Динамическая конфигурация (SIP008)</h2>
             <p>
                 Если клиент поддерживает <a href="https://shadowsocks.org/doc/sip008.html">SIP008</a>, используйте следующий URI:
             </p>
             <code id="sip008_uri"></code>
         </div>
-        <section id="nerd" style="display: none">
-            <h2>Временные конфигурации</h2>
-            <p>
-                Конфигурации ниже временные, пока не обновится динамический конфиг. Когда это произойдёт, впн перестанет работать.
-                В этом случае нужно будет открыть эту страницу и перенастроить клиент с новыми параметрами.
-            </p>
-            <div id="streisand" style="display: none">
-                <h3><a href="https://apps.apple.com/app/id6450534064">Streisand</a> (iOS & OS X only)</h3>
-                <div style="text-align: center; margin: 1rem;">
-                    <button id="streisand_connect">Подключить</button>
-                </div>
-                <code id="streisand_uri"></code>
-            </div>
-            <div id="ss" style="display: none">
-                <h3>Shadowsocks URI</h3>
-                <div style="text-align: center; margin: 1rem;">
-                    <button id="ss_connect">Подключить</button>
-                </div>
-                <code id="ss_uri"></code>
-            </div>
-            <div id="manual" style="display: none">
-                <h3>Ваще ручная настройка</h3>
-                <ul>
-                    <li>Server: <code id="manual_server"></code></li>
-                    <li>Port: <code id="manual_port"></code></li>
-                    <li>Password: <code id="manual_password"></code></li>
-                    <li>Method: <code id="manual_method"></code></li>
-                </ul>
-            </div>
+        <section id="nerd">
+
         </section>
     </section>
 </body>

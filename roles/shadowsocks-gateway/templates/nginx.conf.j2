@@ -37,4 +37,10 @@ stream {
 
         proxy_pass $backend;
     }
+
+    server {
+        listen {{ server.port }} udp;
+
+        proxy_pass shadowsocks_backend;
+    }
 }

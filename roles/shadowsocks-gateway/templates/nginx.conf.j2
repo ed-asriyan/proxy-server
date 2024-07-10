@@ -3,12 +3,12 @@ daemon off;
 worker_processes auto;
 
 events {
-    worker_connections 1024;
+    worker_connections {{ shadowsocks_gateway_worker_connections }};
 }
 
 http {
     server {
-        listen 80 default_server;
+        listen *:80 default_server;
         server_name _;
         return 301 https://{{ shadowsocks_gateway_fallback_proxy_target }};
     }
@@ -31,7 +31,7 @@ stream {
     }
 
     server {
-        listen {{ server.port }};
+        listen *:{{ server.port }};
         proxy_timeout 5s;
         ssl_preread on;
 
@@ -39,7 +39,7 @@ stream {
     }
 
     server {
-        listen {{ server.port }} udp;
+        listen *:{{ server.port }} udp;
 
         proxy_pass shadowsocks_backend;
     }

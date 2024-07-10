@@ -3,5 +3,5 @@ keys:
   - cipher: {{ server.method }}
     id: {{ user.key }}
     port: {{ shadowsocks_port }}
-    secret: {{ (user.value + server.port | string + server.method + server.uuid | string) | hash('sha512') }}
+    secret: {{ (user.value + server.port | string + server.method + server.uuid | string + server.secret | string) | hash('sha512') }}
 {% endfor %}

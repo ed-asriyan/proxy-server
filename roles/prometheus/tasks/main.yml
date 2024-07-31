@@ -44,6 +44,27 @@
     mode: "600"
   register: ssl_cert
 
+- name: Create directory for scrape targets certs
+  file:
+    path: "/home/{{ prometheus_user }}/{{ prometheus_scrape_ssl_certs_dir_name }}"
+    state: directory
+
+- name: Copy scrape targets SSL certificates
+  copy:
+    src: "{{ item.prometheus_metrics.tls.certificate_path }}"
+    dest: "/home/{{ prometheus_user }}/{{ prometheus_scrape_ssl_certs_dir_name }}/{{ item.uuid }}-{{ prometheus_scrape_ssl_cert_filename_suffix }}"
+    group: "{{ prometheus_user }}"
+    owner: "{{ prometheus_user }}"
+    mode: "600"
+  with_items: "{{ servers }}"
+  register: ssl_scrape_cert
+
+- name: Remove unexpected files in directory for scrape targets certs
+  include_tasks: tasks/remove-unexpected-files.yml
+  vars:
+    directory: "/home/{{ prometheus_user }}/{{ prometheus_scrape_ssl_certs_dir_name }}"
+    files: "{{ servers | map(attribute='uuid') | map('regex_replace', '^(.*)$', '\\1-' + prometheus_scrape_ssl_cert_filename_suffix) | list }}"
+
 - name: Render prometheus config
   template:
     src: config.yml.j2
@@ -71,6 +92,7 @@
       - config.yml
       - "{{ prometheus_ssl_cert_filename }}"
       - "{{ prometheus_ssl_key_filename }}"
+      - "{{ prometheus_scrape_ssl_certs_dir_name }}"
       - "{{ prometheus_downloads[arch.stdout].directory }}"
       - data
 
@@ -90,4 +112,4 @@
     name: prometheus.service
     state: restarted
     enabled: yes
-  when: systemd.changed or download.changed or config.changed or web.changed or ssl_private.changed or ssl_cert.changed
+  when: systemd.changed or download.changed or config.changed or web.changed or ssl_private.changed or ssl_cert.changed or ssl_scrape_cert.changed

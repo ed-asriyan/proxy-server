@@ -1,18 +1,28 @@
 global:
   scrape_interval: 1m
 scrape_configs:
-  - job_name: outline-server-ss
+{% for server in servers %}
+  - job_name: 'shadowsocks-{{ server.host }}'
+    scheme: https
+    tls_config:
+      ca_file: '/home/{{ prometheus_user }}/{{ prometheus_scrape_ssl_certs_dir_name }}/{{ server.uuid }}-{{ prometheus_scrape_ssl_cert_filename_suffix }}'
+    metrics_path: '{{ server.prometheus_metrics.shadowsocks.url_path }}'
     static_configs:
       - targets:
-          - '127.0.0.1:{{ shadowsocks_metrics_port }}'
+        - '{{ server.host }}:{{ server.prometheus_metrics.port }}'
         labels:
-          instance: '{{ server.uuid }}'
-  - job_name: node-exporter
+          instance: '{{ server.host }}'
+  - job_name: 'node-exporter-{{ server.host }}'
+    scheme: https
+    tls_config:
+      ca_file: '/home/{{ prometheus_user }}/{{ prometheus_scrape_ssl_certs_dir_name }}/{{ server.uuid }}-{{ prometheus_scrape_ssl_cert_filename_suffix }}'
+    metrics_path: '{{ server.prometheus_metrics.node_exporter.url_path }}'
     static_configs:
       - targets:
-          - '127.0.0.1:{{ node_exporter_port }}'
+        - '{{ server.host }}:{{ server.prometheus_metrics.port }}'
         labels:
-          instance: '{{ server.uuid }}'
+          instance: '{{ server.host }}'
+{% endfor %}
 remote_write:
   - url: {{ prometheus_remote.url }}
     basic_auth:

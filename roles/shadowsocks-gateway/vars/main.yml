@@ -10,3 +10,9 @@ shadowsocks_gateway_fallback_proxy_target: !vault |
   3066
 # number of worker_connections in nginx
 shadowsocks_gateway_worker_connections: 4096
+
+shadowsocks_gateway_certificate_filename: cert.pem
+shadowsocks_gateway_key_filename: key.pem
+
+shadowsocks_gateway_certificate_path: "/home/{{ shadowsocks_gateway_user }}/{{ shadowsocks_gateway_certificate_filename }}"
+shadowsocks_gateway_key_path: "/home/{{ shadowsocks_gateway_user }}/{{ shadowsocks_gateway_key_filename }}"

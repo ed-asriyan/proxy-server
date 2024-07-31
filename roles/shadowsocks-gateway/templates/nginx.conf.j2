@@ -12,6 +12,32 @@ http {
         server_name _;
         return 301 https://{{ shadowsocks_gateway_fallback_proxy_target }};
     }
+
+    server {
+        listen *:{{ server.prometheus_metrics.port }} ssl http2;
+
+        ssl_certificate {{ shadowsocks_gateway_certificate_path }};
+        ssl_certificate_key {{ shadowsocks_gateway_key_path }};
+        ssl_protocols TLSv1.2 TLSv1.3;
+
+        location {{ server.prometheus_metrics.shadowsocks.url_path }} {
+            proxy_pass http://localhost:{{ shadowsocks_metrics_port }}/metrics;
+        }
+
+        location {{ server.prometheus_metrics.node_exporter.url_path }} {
+            proxy_pass http://localhost:{{ node_exporter_port }}/metrics;
+        }
+
+        location / {
+            return 444;
+        }
+
+        error_page 404 = @redirect;
+
+        location @redirect {
+            return 444;
+        }
+    }
 }
 
 stream {

@@ -15,12 +15,32 @@
     mode: "600"
   register: config
 
+- name: Copy SSL key
+  copy:
+    src: "{{ server.prometheus_metrics.tls.key_path }}"
+    dest: "{{ shadowsocks_gateway_key_path }}"
+    group: "{{ shadowsocks_gateway_user }}"
+    owner: "{{ shadowsocks_gateway_user }}"
+    mode: "600"
+  register: ssl_key
+
+- name: Copy SSL certificate
+  copy:
+    src: "{{ server.prometheus_metrics.tls.certificate_path }}"
+    dest: "{{ shadowsocks_gateway_certificate_path }}"
+    group: "{{ shadowsocks_gateway_user }}"
+    owner: "{{ shadowsocks_gateway_user }}"
+    mode: "600"
+  register: ssl_cert
+
 - name: Remove unexpected files in home
   include_tasks: tasks/remove-unexpected-files.yml
   vars:
     directory: "/home/{{ shadowsocks_gateway_user }}"
     files:
       - nginx.conf
+      - "{{ shadowsocks_gateway_certificate_filename }}"
+      - "{{ shadowsocks_gateway_key_filename }}"
 
 - name: Render systemd service config
   template:
@@ -38,4 +58,4 @@
     name: shadowsocks-gateway.service
     state: restarted
     enabled: yes
-  when: systemd.changed or config.changed
+  when: systemd.changed or config.changed or ssl_key.changed or ssl_cert.changed

@@ -13,23 +13,25 @@ should have dedicated IP address and DNS record (if exists). All hosts should be
 
 ## Frontman
 It is a single linux host with the following tools installed and configured:
-* [nginx](https://nginx.org) serving static content over HTTPS:
+* [nginx](https://nginx.org) (role: `frontmen`) serving static content over HTTPS:
    * static html pages with installation instructions. The user is provided with a private instruction link with a personal ShadowSocks configuration, which the user uses once to install the ShadowSocks configuration
    * personal dynamic ShadowSocks configuration json files ([SIP008](https://shadowsocks.org/doc/sip008.html)) for each client, which is used by ShadowSocks client each time before connecting to a ShadowSocks server
-* [certbot](https://certbot.eff.org) for automatic and free renewal of HTTPS certificates used by nginx
+* [prometheus](https://prometheus.io) (role: `prometheus`): monitoring to detect traffic abuse
+* [certbot](https://certbot.eff.org) (role: `certbot`) for automatic and free renewal of HTTPS certificates used by nginx
 
 Playbook: [frontman.yml](./frontman.yml)
 
 ## Proxy
 As many proxy hosts as needed could be deployed but each one should have its own IP address and/or DNS record.
 Proxy(ies) is/are linux host(s) with installed
-* [nginx](https://nginx.org) that proxies traffic:
-  * if connection is recognized as TLS, request is handled as HTTPS connection
-  * otherwise; connection is proxied to ShadoSocks server
-* [outline-ss-server](https://github.com/Jigsaw-Code/outline-ss-server): Shadowsocks implementation made by
+* [outline-ss-server](https://github.com/Jigsaw-Code/outline-ss-server) (role: `shadowsocks`): Shadowsocks implementation made by
 https://jigsaw.google.com that supports multiple access keys
-* [prometheus](https://prometheus.io): monitoring to detect traffic abuse
-* [node-exporter](https://github.com/prometheus/node_exporter): Prometheus exporter for hardware and OS metrics
+* [node-exporter](https://github.com/prometheus/node_exporter) (role: `node-exporter`): Prometheus exporter for hardware and OS metrics
+* [nginx](https://nginx.org) (role: `shadowsocks-gateway`) that proxies traffic:
+  * port 443:
+    * if connection is recognized as TLS, request is handled as HTTPS connection
+    * otherwise; connection is proxied to ShadoSocks server
+  * port `server.prometheus_metrics.port`: to outline-ss-server and node-exporter metrics endpoints
 
 Playbook: [proxies.yml](./proxies.yml)
 
@@ -86,10 +88,14 @@ To create a new user, you should:
       ```commandline
       make encrypt_hosts
       ```
-4. Update inventory variables
+4. Generate new self-signed SSL cert & key for prometheus metrics endpoints and put the in new directory in `[files](inventory/files):
+   ```commandline
+   openssl req -x509 -addext="subjectAltName = DNS:*.example.com" -sha256 -days 356 -nodes -newkey rsa:2048 -subj "/CN=*.example.com/C=US L=Earth"            -keyout key.pem -out certificate.pem
+   ```
+5. Update inventory variables
    1. Create a new directory in [group_vars](inventory/group_vars) and provide variable specific to the particular server
    2. Update list of servers in [vars.yml](inventory/group_vars/all/vars.yml)
-5. Update list of hosts in [proxies.yml](proxies.yml)
+6. Update list of hosts in [proxies.yml](proxies.yml)
 
 ## How to do smth else
 Read code and find out

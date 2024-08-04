@@ -74,13 +74,6 @@
     path: "{{ static_root_local }}"
     state: absent
 
-- name: Render users URIs
-  become: false
-  delegate_to: localhost
-  template:
-    src: URIs.txt.j2
-    dest: "URIs.txt"
-
 - name: Copy SSL key
   copy:
     src: "{{ ssl_key_path }}"

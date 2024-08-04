@@ -1,0 +1,10 @@
+- name: Include users variables
+  include_vars:
+    file: inventory/group_vars/all/users.yml
+
+- name: Render users.csv
+  become: false
+  delegate_to: localhost
+  template:
+    src: users.csv.j2
+    dest: "users.csv"

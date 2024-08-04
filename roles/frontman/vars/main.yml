@@ -1,7 +1,5 @@
 # linus user to run frontman as
 frontman_user: frontman
-# port, configs should be served on
-frontman_port: 1399
 # relative path of directory where static content should be stored
 frontman_static_directory_filename: static
 frontman_static_directory_path: /home/{{ frontman_user }}/{{ frontman_static_directory_filename }}

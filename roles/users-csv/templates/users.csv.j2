@@ -1,0 +1,4 @@
+username,uuid,instructions link
+{% for user in users | dict2items %}
+{{ user.key }},{{ user.value }},https://{{ frontman_domain }}:{{ frontman_port }}#{{ user.value }}
+{% endfor %}

@@ -1,0 +1,5 @@
+- hosts:
+    - localhost
+  no_log: true
+  roles:
+    - users-csv

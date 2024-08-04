@@ -63,12 +63,12 @@ users:
 To create a new user, you should:
 1. Decrypt the file with users:
    ```commandline
-   make decrypt_users
+   make users_csv_encrypt
    ```
 2. Add/update users and secrets to the file
 3. Encrypt the file back:
    ```commandline
-   make encrypt_users
+   make users_csv_decrypt
    ```
 
 ## New server setup
@@ -81,12 +81,12 @@ To create a new user, you should:
 3. Update [hosts file](inventory/hosts)
    1. Decrypt hosts file:
       ```commandline
-      make decrypt_hosts
+      make hosts_decrypt
       ```
     2. Add/update servers in the file
     3. Encrypt hosts file:
       ```commandline
-      make encrypt_hosts
+      make hosts_encrypt
       ```
 4. Generate new self-signed SSL cert & key for prometheus metrics endpoints and put the in new directory in `[files](inventory/files):
    ```commandline
@@ -110,7 +110,7 @@ The following GitHub secrets are required for CD:
 * `SSH_PRIVATE_KEY`: SSH private key to access servers
 * `VAULT_PASSWORD`: vault password
 
-Successful workflow generates an encrypted `URIs.txt` you can download to repository root and run the following command
+Successful workflow generates an encrypted `users.csv` you can download to repository root and run the following command
 to decrypt the file:
 ```commandline
 make decrypt_uris
@@ -121,6 +121,11 @@ It can be useful for sharing SS URIs with users.
 ### Deploy on production
 ```commandline
 make deploy_frontman deploy_proxies
+```
+
+### Generate user list table
+```commandline
+make users_csv_generate
 ```
 
 ### Generate user client

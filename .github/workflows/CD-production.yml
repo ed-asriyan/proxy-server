@@ -42,13 +42,7 @@ jobs:
 
       - name: Run playbook
         shell: bash
-        run: make deploy_frontman uris_encrypt
-
-      - name: Upload users.txt
-        uses: actions/upload-artifact@v3
-        with:
-          name: URIs.txt
-          path: URIs.txt
+        run: make deploy_frontman
 
   deploy-proxies:
     name: Deploy proxies on production
@@ -82,3 +76,28 @@ jobs:
       - name: Run playbook
         shell: bash
         run: make deploy_proxies
+
+
+  generate-users-csv:
+    name: Generate users.csv
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Save vault password to vault.txt
+        env:
+          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD }}
+        shell: bash
+        run: |
+          echo "$VAULT_PASSWORD" > vault.txt && chmod 600 vault.txt
+
+      - name: Run playbook
+        shell: bash
+        run: make users_csv_generate users_csv_encrypt
+
+      - name: Upload users.csv
+        uses: actions/upload-artifact@v3
+        with:
+          name: users.csv
+          path: users.csv

@@ -3,4 +3,5 @@
   no_log: true
   roles:
     - shadowsocks
+    - node-exporter
     - shadowsocks-gateway

@@ -25,7 +25,7 @@ repos:
         name: Check if files do not exist
         language: script
         entry: .pre-commit-hooks/file-does-not-exist-check
-        files: ^URIs.txt$
+        files: ^users.csv$
       - id: file-does-not-exist-check
         name: Check if files do not exist
         language: script

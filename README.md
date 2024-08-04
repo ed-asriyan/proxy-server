@@ -63,12 +63,12 @@ users:
 To create a new user, you should:
 1. Decrypt the file with users:
    ```commandline
-   make decrypt_users
+   make users_encrypt
    ```
-2. Add/update users and secrets to the file
+2. Add/update users and secrets to the file: you should add/modify/delete usernames and their uuid (generated randomly by yourself) to the file
 3. Encrypt the file back:
    ```commandline
-   make encrypt_users
+   make users_decrypt
    ```
 
 ## New server setup
@@ -81,21 +81,21 @@ To create a new user, you should:
 3. Update [hosts file](inventory/hosts)
    1. Decrypt hosts file:
       ```commandline
-      make decrypt_hosts
+      make hosts_decrypt
       ```
     2. Add/update servers in the file
     3. Encrypt hosts file:
       ```commandline
-      make encrypt_hosts
+      make hosts_encrypt
       ```
 4. Generate new self-signed SSL cert & key for prometheus metrics endpoints and put the in new directory in `[files](inventory/files):
    ```commandline
    openssl req -x509 -addext="subjectAltName = DNS:*.example.com" -sha256 -days 356 -nodes -newkey rsa:2048 -subj "/CN=*.example.com/C=US L=Earth"            -keyout key.pem -out certificate.pem
    ```
 5. Update inventory variables
-   1. Create a new directory in [group_vars](inventory/group_vars) and provide variable specific to the particular server
-   2. Update list of servers in [vars.yml](inventory/group_vars/all/vars.yml)
-6. Update list of hosts in [proxies.yml](proxies.yml)
+   1. Update list of servers in [vars.yml](inventory/group_vars/all/vars.yml)
+   2. Create a new directory in [group_vars](inventory/group_vars) and provide variable specific to the particular server
+   3. Add server to `proxies` group in [hosts](inventory/hosts) (the file should be decrypted first)
 
 ## How to do smth else
 Read code and find out
@@ -110,7 +110,7 @@ The following GitHub secrets are required for CD:
 * `SSH_PRIVATE_KEY`: SSH private key to access servers
 * `VAULT_PASSWORD`: vault password
 
-Successful workflow generates an encrypted `URIs.txt` you can download to repository root and run the following command
+Successful workflow generates an encrypted `users.csv` you can download to repository root and run the following command
 to decrypt the file:
 ```commandline
 make decrypt_uris
@@ -121,6 +121,11 @@ It can be useful for sharing SS URIs with users.
 ### Deploy on production
 ```commandline
 make deploy_frontman deploy_proxies
+```
+
+### Generate user list table
+```commandline
+make users_csv_generate
 ```
 
 ### Generate user client

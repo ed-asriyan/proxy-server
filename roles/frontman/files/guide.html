@@ -39,7 +39,7 @@
         }
 
         const getSsUri = function(server) {
-            return 'ss://' + btoa(server.method + ':' + server.password) + '@' + server.server + ':' + server['server_port'];
+            return `ss://${btoa(`${server.method}:${server.password}`)}@${server.server}:${server['server_port']}?prefix=${server['prefix']}`;
         }
 
         const getStraisandUri = function(server) {
@@ -58,7 +58,9 @@
                 background-color: white;
                 padding: 1rem;
             `;
-            document.getElementById('sip008_uri').innerHTML = ssConfUri;
+            for (element of document.getElementsByClassName('sip008_uri')) {
+                element.innerHTML = ssConfUri;
+            };
 
             getSsConfig(hash)
                 .then(renderStaticConfigurations)
@@ -103,6 +105,7 @@
                         <li>Port: <code>${server['server_port']}</code></li>
                         <li>Password: <code>${server['password']}</code></li>
                         <li>Method: <code>${server['method']}</code></li>
+                        <li>Prefix: <code>${server['prefix']}</code></li>
                     </ul>
                 </div>
             `;
@@ -167,6 +170,10 @@
         .connect-vpn:hover {
             background-color: azure;
         }
+
+        pre {
+            overflow: scroll;
+        }
     </style>
 </head>
 <body id="body">
@@ -212,6 +219,12 @@
                 <div style="text-align: center; margin: 1rem;">
                     <button id="connect_vpn" class="connect-vpn"><b>Подключить ВПН</b></button>
                 </div>
+                <p>
+                    Если кнопка не работает, скопируйте текст ниже и вставьте его в Outline:
+                </p>
+                <p>
+                    <code class="sip008_uri"></code>
+                </p>
             </li>
         </ol>
 
@@ -277,7 +290,7 @@
             <p>
                 Если клиент поддерживает <a href="https://shadowsocks.org/doc/sip008.html">SIP008</a>, используйте следующий URI:
             </p>
-            <code id="sip008_uri"></code>
+            <code class="sip008_uri"></code>
         </div>
         <section id="nerd">
 

@@ -1,10 +1,5 @@
-- name: Install snap
-  package:
-    name: snapd
-    state: present
-
 - name: Install certbot
-  snap:
+  package:
     name: certbot
     state: present
 

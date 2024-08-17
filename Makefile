@@ -16,7 +16,7 @@ users_encrypt:
 	ansible-vault encrypt --vault-password-file $(VAULT_FILE) $(USERS_FILE)
 
 users_decrypt:
-	ansible-vault decrypt --vault-password-file $(VAULT_FILE) $(USERS_CSV_FILE)
+	ansible-vault decrypt --vault-password-file $(VAULT_FILE) $(USERS_FILE)
 
 users_csv_encrypt:
 	ansible-vault encrypt --vault-password-file $(VAULT_FILE) $(USERS_CSV_FILE)

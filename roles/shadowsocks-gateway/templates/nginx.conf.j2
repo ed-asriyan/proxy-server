@@ -8,13 +8,16 @@ events {
 
 http {
     server {
-        listen *:80 default_server;
+        listen *:80;
+        listen [::]:80;
         server_name _;
         return 301 https://{{ shadowsocks_gateway_fallback_proxy_target }};
     }
 
+{% if 'prometheus_metrics' in server %}
     server {
         listen *:{{ server.prometheus_metrics.port }} ssl http2;
+        listen [::]:{{ server.prometheus_metrics.port }} ssl http2;
 
         ssl_certificate {{ shadowsocks_gateway_certificate_path }};
         ssl_certificate_key {{ shadowsocks_gateway_key_path }};
@@ -38,6 +41,7 @@ http {
             return 444;
         }
     }
+{% endif %}
 }
 
 stream {

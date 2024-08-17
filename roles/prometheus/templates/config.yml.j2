@@ -2,6 +2,7 @@ global:
   scrape_interval: 1m
 scrape_configs:
 {% for server in servers %}
+{% if 'prometheus_metrics' in server %}
   - job_name: 'shadowsocks-{{ server.host }}'
     scheme: https
     tls_config:
@@ -22,6 +23,7 @@ scrape_configs:
         - '{{ server.host }}:{{ server.prometheus_metrics.port }}'
         labels:
           instance: '{{ server.host }}'
+{% endif %}
 {% endfor %}
 remote_write:
   - url: {{ prometheus_remote.url }}

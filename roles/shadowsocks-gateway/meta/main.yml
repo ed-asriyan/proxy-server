@@ -2,3 +2,4 @@ dependencies:
   - role: nginx
   - role: shadowsocks
   - role: node-exporter
+    when: "'prometheus_metrics' in server"

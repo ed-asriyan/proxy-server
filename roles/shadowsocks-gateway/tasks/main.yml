@@ -23,6 +23,7 @@
     owner: "{{ shadowsocks_gateway_user }}"
     mode: "600"
   register: ssl_key
+  when: "{{ 'prometheus_metrics' in server }}"
 
 - name: Copy SSL certificate
   copy:
@@ -32,6 +33,7 @@
     owner: "{{ shadowsocks_gateway_user }}"
     mode: "600"
   register: ssl_cert
+  when: "{{ 'prometheus_metrics' in server }}"
 
 - name: Remove unexpected files in home
   include_tasks: tasks/remove-unexpected-files.yml

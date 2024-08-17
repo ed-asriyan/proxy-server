@@ -57,6 +57,7 @@
     owner: "{{ prometheus_user }}"
     mode: "600"
   with_items: "{{ servers }}"
+  when: "'prometheus_metrics' in item"
   register: ssl_scrape_cert
 
 - name: Remove unexpected files in directory for scrape targets certs

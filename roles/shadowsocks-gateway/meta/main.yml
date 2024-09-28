@@ -1,5 +1,7 @@
 dependencies:
   - role: nginx
   - role: shadowsocks
+    vars:
+      shadowsocks_listen_address: 127.0.0.1
   - role: node-exporter
     when: "'prometheus_metrics' in server"

@@ -3,14 +3,14 @@ shadowsocks_user: shadowsocks
 # URL to download outline from
 shadowsocks_downloads:
   x86_64:
-    url: https://github.com/Jigsaw-Code/outline-ss-server/releases/download/v1.4.0/outline-ss-server_1.4.0_linux_x86_64.tar.gz
-    md5: d0e6c3c845a9ee6d6bc8f4c4e9289b8a
+    url: https://github.com/Jigsaw-Code/outline-ss-server/releases/download/v1.7.0/outline-ss-server_1.7.0-rc1_linux_x86_64.tar.gz
+    md5: ad389e72a137a6591edb378909666b38
   arm64:
-    url: https://github.com/Jigsaw-Code/outline-ss-server/releases/download/v1.4.0/outline-ss-server_1.4.0_linux_arm64.tar.gz
-    md5: 8f51c78b3b2b0d732c38edbf684e579b
+    url: https://github.com/Jigsaw-Code/outline-ss-server/releases/download/v1.7.0/outline-ss-server_1.7.0-rc1_linux_arm64.tar.gz
+    md5: c6bd6406fbdca923aac16c3afe01fe6d
   armv7l:
-    url: https://github.com/Jigsaw-Code/outline-ss-server/releases/download/v1.4.0/outline-ss-server_1.4.0_linux_armv7.tar.gz
-    md5: b17c75a6d3d2f35093d54ad3257f97db
+    url: https://github.com/Jigsaw-Code/outline-ss-server/releases/download/v1.7.0/outline-ss-server_1.7.0-rc1_linux_armv7.tar.gz
+    md5: 8c8583ee94693b88a5a57a4416097b8f
 # name of outline executable file
 shadowsocks_executable_name: outline-ss-server
 # replay defense; see https://github.com/Jigsaw-Code/outline-ss-server/blob/master/service/PROBES.md for details
@@ -19,3 +19,5 @@ shadowsocks_replay_history: 10000
 shadowsocks_metrics_port: 9091
 # port of shadowsocks behind gateway
 shadowsocks_port: 46365
+# shadowsocks listen address
+shadowsocks_listen_address:

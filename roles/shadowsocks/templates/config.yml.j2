@@ -1,7 +1,14 @@
-keys:
+# https://github.com/Jigsaw-Code/outline-ss-server/blob/master/cmd/outline-ss-server/config_example.yml
+
+services:
+  - listeners:
+      - type: tcp
+        address: "{{ shadowsocks_listen_address }}:{{ shadowsocks_port }}"
+      - type: udp
+        address: "{{ shadowsocks_listen_address }}:{{ shadowsocks_port }}"
+    keys:
 {% for user in users | dict2items %}
-  - cipher: {{ server.method }}
-    id: {{ user.key }}
-    port: {{ shadowsocks_port }}
-    secret: {{ (user.value + server.port | string + server.method + server.uuid | string + server.secret | string) | hash('sha512') }}
+      - cipher: {{ server.method }}
+        id: {{ user.key }}
+        secret: {{ (user.value + server.port | string + server.method + server.uuid | string + server.secret | string) | hash('sha512') }}
 {% endfor %}

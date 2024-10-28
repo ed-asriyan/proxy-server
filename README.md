@@ -52,24 +52,18 @@ permissions to read/write it: `chmod 600 vault.txt`!**
 permissions to read/write it: `chmod 600 id_rsa`!**
 
 ## How to update list of SS users
-Users are stored in [encrypted users.yml file](inventory/group_vars/all/users.yml) with the following schema:
-```yaml
-users:
-  user1_name: user1_uuid
-  user2_name: user2_uuid
-  user3_name: user3_uuid
+Users should be stored in cloud storage providing HTTPS URL returning json in the following format:
+```json
+{
+   "user1_uuid": { "name": "user1_name" },
+   "user2_uuid": { "name": "user2_name" }
+}
 ```
+So,
 
 To create a new user, you should:
-1. Decrypt the file with users:
-   ```commandline
-   make users_encrypt
-   ```
-2. Add/update users and secrets to the file: you should add/modify/delete usernames and their uuid (generated randomly by yourself) to the file
-3. Encrypt the file back:
-   ```commandline
-   make users_decrypt
-   ```
+1. Update use users.json on the URL
+2. Run deploy
 
 ## New server setup
 1. Generate new SSH key and store it in `id_rsa` file in the root of the local repository:

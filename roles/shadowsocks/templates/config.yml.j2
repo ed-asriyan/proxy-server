@@ -9,6 +9,6 @@ services:
     keys:
 {% for user in users | dict2items %}
       - cipher: {{ server.method }}
-        id: {{ user.key }}
-        secret: {{ (user.value + server.port | string + server.method + server.uuid | string + server.secret | string) | hash('sha512') }}
+        id: {{ user.value.name }}
+        secret: {{ (user.key + server.port | string + server.method + server.uuid | string + server.secret | string) | hash('sha512') }}
 {% endfor %}

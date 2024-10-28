@@ -29,9 +29,14 @@
     owner: "{{ shadowsocks_user }}"
     mode: "700"
 
+- name: Load users
+  delegate_to: localhost
+  command: "curl -s {{ users_url }}"
+  register: users_json
+
 - name: Include users variables
-  include_vars:
-    file: inventory/group_vars/all/users.yml
+  set_fact:
+    users: "{{ users_json.stdout | from_json }}"
 
 - name: Render outline-ss-server config
   template:

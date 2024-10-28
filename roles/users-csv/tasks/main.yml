@@ -1,6 +1,11 @@
-- name: Include users variables
-  include_vars:
-    file: inventory/group_vars/all/users.yml
+- name: Load users
+  delegate_to: localhost
+  command: "curl -s {{ users_url }}"
+  register: users_json
+
+- name: Load users
+  set_fact:
+    users: "{{ users_json.stdout | from_json }}"
 
 - name: Render users.csv
   become: false

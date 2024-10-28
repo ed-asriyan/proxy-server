@@ -41,21 +41,26 @@
     src: robots.txt
     dest: "{{ static_root_local }}/robots.txt"
 
-- name: Include users variables
-  include_vars:
-    file: inventory/group_vars/all/users.yml
+- name: Load users
+  delegate_to: localhost
+  command: "curl -s {{ users_url }}"
+  register: users_json
+
+- name: Load users
+  set_fact:
+    users: "{{ users_json.stdout | from_json }}"
 
 - name: Render configs
   delegate_to: localhost
   become: false
   template:
     src: config.json.j2
-    dest: "{{ static_root_local }}/{{ item.value }}"
+    dest: "{{ static_root_local }}/{{ item.key }}"
   with_items: "{{ users | dict2items }}"
   loop_control:
     index_var: loop_index
   vars:
-    user_uuid: "{{ item.value }}"
+    user_uuid: "{{ item.key }}"
     default_server: "{{ servers[loop_index % (servers | length)] }}"
 
 - name: Synchronize local static root with remote host

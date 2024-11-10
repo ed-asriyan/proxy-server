@@ -36,3 +36,8 @@
     name: nginx.service
     state: stopped
     enabled: false
+
+# https://superuser.com/a/892391
+- name: Set CAP_NET_BIND_SERVICE capability for nginx
+  command: setcap 'cap_net_bind_service=+ep' /usr/sbin/nginx
+  when: nginx_installed.failed

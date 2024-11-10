@@ -12,8 +12,14 @@ frontman_default_redirect: !vault |
   3464613861643339330a663163373932396162316636376463623630643837323038316130663763
   32373533336131306232313534323866303561346663613237623639303761353265
 
+frontman_nginx_conf_filename: nginx.conf
 frontman_ssl_cert_filename: cert.pem
 frontman_ssl_key_filename: key.pem
+frontman_error_log_filename: error.log
+frontman_pid_filename: nginx.pid
 
+frontman_nginx_conf_path: /home/{{ frontman_user }}/{{ frontman_nginx_conf_filename }}
 frontman_ssl_cert_path: /home/{{ frontman_user }}/{{ frontman_ssl_cert_filename }}
 frontman_ssl_key_path: /home/{{ frontman_user }}/{{ frontman_ssl_key_filename }}
+frontman_error_log_path: /home/{{ frontman_user }}/{{ frontman_error_log_filename }}
+frontman_pid_path: /home/{{ frontman_user }}/{{ frontman_pid_filename }}

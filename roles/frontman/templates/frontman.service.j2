@@ -3,8 +3,8 @@ Description=frontman
 After=network.service
 
 [Service]
-User=root
-ExecStart=nginx -c /home/{{ frontman_user }}/nginx.conf
+User={{ frontman_user }}
+ExecStart=/usr/sbin/nginx -c {{ frontman_nginx_conf_path }}
 Restart=always
 
 [Install]

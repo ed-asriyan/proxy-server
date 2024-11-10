@@ -1,11 +1,16 @@
 daemon off;
 worker_processes auto;
 
+pid {{ frontman_pid_path }};
+
 events {
     worker_connections 1024;
 }
 
 http {
+    access_log off;
+    error_log {{ frontman_error_log_path }};
+
     server {
         listen {{ frontman_port }} ssl http2;
         server_name {{ frontman_domain }};

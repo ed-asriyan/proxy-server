@@ -107,11 +107,14 @@
       - "{{ frontman_static_directory_filename }}"
       - "{{ frontman_ssl_cert_filename }}"
       - "{{ frontman_ssl_key_filename }}"
+      - "{{ frontman_error_log_filename }}"
+      - "{{ frontman_pid_filename }}"
+      - "{{ frontman_nginx_conf_filename }}"
 
 - name: Render nginx config
   template:
     src: nginx.conf.j2
-    dest: "/home/{{ frontman_user }}/nginx.conf"
+    dest: "{{ frontman_nginx_conf_path }}"
     group: "{{ frontman_user }}"
     owner: "{{ frontman_user }}"
     mode: "600"

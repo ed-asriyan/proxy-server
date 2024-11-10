@@ -9,7 +9,7 @@ shadowsocks_gateway_fallback_proxy_target: !vault |
   6139373831393530360a663130336433373266333635303637393735313932336131326162373734
   3066
 # number of worker_connections in nginx
-shadowsocks_gateway_worker_connections: 4096
+shadowsocks_gateway_worker_connections: 65536
 
 shadowsocks_gateway_certificate_filename: cert.pem
 shadowsocks_gateway_key_filename: key.pem

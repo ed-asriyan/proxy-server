@@ -2,11 +2,16 @@ load_module /usr/lib/nginx/modules/ngx_stream_module.so;
 daemon off;
 worker_processes auto;
 
+pid {{ shadowsocks_gateway_pid_path }};
+
 events {
     worker_connections {{ shadowsocks_gateway_worker_connections }};
 }
 
 http {
+    access_log off;
+    error_log {{ shadowsocks_gateway_error_log_path }};
+
     server {
         listen *:80;
         listen [::]:80;
@@ -45,6 +50,9 @@ http {
 }
 
 stream {
+    access_log off;
+    error_log {{ shadowsocks_gateway_error_log_path }};
+
     map $ssl_preread_protocol $backend {
         default shadowsocks_backend;
         "TLSv1.0" https_backend;

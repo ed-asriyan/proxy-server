@@ -43,6 +43,9 @@
       - nginx.conf
       - "{{ shadowsocks_gateway_certificate_filename }}"
       - "{{ shadowsocks_gateway_key_filename }}"
+      - "{{ shadowsocks_gateway_error_log_filename }}"
+      - "{{ shadowsocks_gateway_pid_filename }}"
+      - "{{ shadowsocks_gateway_nginx_conf_filename }}"
 
 - name: Render systemd service config
   template:

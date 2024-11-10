@@ -3,8 +3,8 @@ Description=shadowsocks-gateway
 After=shadowsocks.service
 
 [Service]
-User=root
-ExecStart=nginx -c /home/{{ shadowsocks_gateway_user }}/nginx.conf
+User={{ shadowsocks_gateway_user }}
+ExecStart=/usr/sbin/nginx -c {{ shadowsocks_gateway_nginx_conf_path }}
 Restart=always
 
 [Install]

@@ -2,6 +2,8 @@ load_module /usr/lib/nginx/modules/ngx_stream_module.so;
 daemon off;
 worker_processes auto;
 
+# https://www.cyberciti.biz/faq/linux-unix-nginx-too-many-open-files
+worker_rlimit_nofile {{ shadowsocks_gateway_worker_rlimit_nofile }};
 pid {{ shadowsocks_gateway_pid_path }};
 
 events {

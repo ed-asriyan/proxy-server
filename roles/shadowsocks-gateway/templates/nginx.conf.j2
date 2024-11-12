@@ -11,10 +11,10 @@ events {
 }
 
 http {
-    access_log off;
-    error_log {{ shadowsocks_gateway_error_log_path }};
-
     server {
+        access_log {{ shadowsocks_gateway_http_access_log_path }};
+        error_log {{ shadowsocks_gateway_http_error_log_path }};
+
         listen *:80;
         listen [::]:80;
         server_name _;
@@ -23,6 +23,9 @@ http {
 
 {% if 'prometheus_metrics' in server %}
     server {
+        access_log {{ shadowsocks_gateway_prometheus_access_log_path }};
+        error_log {{ shadowsocks_gateway_prometheus_error_log_path }};
+
         listen *:{{ server.prometheus_metrics.port }} ssl http2;
         listen [::]:{{ server.prometheus_metrics.port }} ssl http2;
 
@@ -52,14 +55,32 @@ http {
 }
 
 stream {
-    access_log off;
-    error_log {{ shadowsocks_gateway_error_log_path }};
+    log_format basic '{'
+        '"time":"$time_iso8601"'
+        ',"remote_addr":"$remote_addr"'
+        ',"protocol":"$protocol"'
+        ',"status":"$status"'
+        ',"bytes_sent":"$bytes_sent"'
+        ',"bytes_received":"$bytes_received"'
+        ',"session_time":"$session_time"'
+        ',"upstream_addr":"$upstream_addr"'
+        ',"upstream_bytes_sent":"$upstream_bytes_sent"'
+        ',"upstream_bytes_received":"$upstream_bytes_received"'
+        ',"upstream_connect_time":"$upstream_connect_time"'
+    '}';
 
     map $ssl_preread_protocol $backend {
         default shadowsocks_backend;
         "TLSv1.0" https_backend;
         "TLSv1.2" https_backend;
         "TLSv1.3" https_backend;
+    }
+
+    map $ssl_preread_protocol $access_log_file {
+        default ../../../dev/null;
+        "TLSv1.0" ../../..{{ shadowsocks_gateway_tls_access_log_path }};
+        "TLSv1.2" ../../..{{ shadowsocks_gateway_tls_access_log_path }};
+        "TLSv1.3" ../../..{{ shadowsocks_gateway_tls_access_log_path }};
     }
 
     upstream https_backend {
@@ -75,12 +96,16 @@ stream {
         proxy_timeout 5s;
         ssl_preread on;
 
+        access_log $access_log_file basic;
+        error_log ../../..{{ shadowsocks_gateway_tcp_error_log_path }};
         proxy_pass $backend;
     }
 
     server {
         listen *:{{ server.port }} udp;
 
+        access_log off;
+        error_log ../../..{{ shadowsocks_gateway_udp_error_log_path }};
         proxy_pass shadowsocks_backend;
     }
 }

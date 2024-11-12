@@ -43,9 +43,15 @@
       - nginx.conf
       - "{{ shadowsocks_gateway_certificate_filename }}"
       - "{{ shadowsocks_gateway_key_filename }}"
-      - "{{ shadowsocks_gateway_error_log_filename }}"
       - "{{ shadowsocks_gateway_pid_filename }}"
       - "{{ shadowsocks_gateway_nginx_conf_filename }}"
+      - "{{ shadowsocks_gateway_http_access_log_filename }}"
+      - "{{ shadowsocks_gateway_http_error_log_filename }}"
+      - "{{ shadowsocks_gateway_tls_access_log_filename }}"
+      - "{{ shadowsocks_gateway_tcp_error_log_filename }}"
+      - "{{ shadowsocks_gateway_udp_error_log_filename }}"
+      - "{{ shadowsocks_gateway_prometheus_access_log_filename }}"
+      - "{{ shadowsocks_gateway_prometheus_error_log_filename }}"
 
 - name: Render systemd service config
   template:

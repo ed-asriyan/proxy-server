@@ -16,11 +16,23 @@ shadowsocks_gateway_worker_rlimit_nofile: 65536
 shadowsocks_gateway_nginx_conf_filename: nginx.conf
 shadowsocks_gateway_certificate_filename: cert.pem
 shadowsocks_gateway_key_filename: key.pem
-shadowsocks_gateway_error_log_filename: error.log
+shadowsocks_gateway_http_access_log_filename: http_access.log
+shadowsocks_gateway_http_error_log_filename: http_error.log
+shadowsocks_gateway_tls_access_log_filename: tls_access.log
+shadowsocks_gateway_tcp_error_log_filename: tcp_error.log
+shadowsocks_gateway_udp_error_log_filename: udp_error.log
+shadowsocks_gateway_prometheus_access_log_filename: prometheus_access.log
+shadowsocks_gateway_prometheus_error_log_filename: prometheus_error.log
 shadowsocks_gateway_pid_filename: nginx.pid
 
 shadowsocks_gateway_nginx_conf_path: /home/{{ shadowsocks_gateway_user }}/{{shadowsocks_gateway_nginx_conf_filename }}
 shadowsocks_gateway_certificate_path: "/home/{{ shadowsocks_gateway_user }}/{{ shadowsocks_gateway_certificate_filename }}"
 shadowsocks_gateway_key_path: "/home/{{ shadowsocks_gateway_user }}/{{ shadowsocks_gateway_key_filename }}"
-shadowsocks_gateway_error_log_path: "/home/{{ shadowsocks_gateway_user }}/{{ shadowsocks_gateway_error_log_filename }}"
+shadowsocks_gateway_http_access_log_path: "/home/{{ shadowsocks_gateway_user }}/{{ shadowsocks_gateway_http_access_log_filename }}"
+shadowsocks_gateway_http_error_log_path: "/home/{{ shadowsocks_gateway_user }}/{{ shadowsocks_gateway_http_error_log_filename }}"
+shadowsocks_gateway_tls_access_log_path: "/home/{{ shadowsocks_gateway_user }}/{{ shadowsocks_gateway_tls_access_log_filename }}"
+shadowsocks_gateway_tcp_error_log_path: "/home/{{ shadowsocks_gateway_user }}/{{ shadowsocks_gateway_tcp_error_log_filename }}"
+shadowsocks_gateway_udp_error_log_path: "/home/{{ shadowsocks_gateway_user }}/{{ shadowsocks_gateway_udp_error_log_filename }}"
+shadowsocks_gateway_prometheus_access_log_path: "/home/{{ shadowsocks_gateway_user }}/{{ shadowsocks_gateway_prometheus_access_log_filename }}"
+shadowsocks_gateway_prometheus_error_log_path: "/home/{{ shadowsocks_gateway_user }}/{{ shadowsocks_gateway_prometheus_error_log_filename }}"
 shadowsocks_gateway_pid_path: "/home/{{ shadowsocks_gateway_user }}/{{ shadowsocks_gateway_pid_filename }}"

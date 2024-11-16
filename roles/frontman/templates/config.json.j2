@@ -25,5 +25,5 @@
     "password": "{{ (user_uuid + default_server.port | string + default_server.method + default_server.uuid | string + default_server.secret | string) | hash('sha512') }}",
     "prefix": "{{ default_server.prefix }}",
     "server":"{{ default_server.host }}",
-    "server_port":"{{ default_server.port }}"
+    "server_port": {{ default_server.port }}
 }

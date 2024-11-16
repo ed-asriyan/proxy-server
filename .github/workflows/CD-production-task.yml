@@ -1,0 +1,49 @@
+name: CD | Production specific Make tasks
+
+on:
+  workflow_dispatch:
+    inputs:
+      tasks:
+        description: 'Make tasks to run'
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      tasks:
+        description: 'Make tasks to run'
+        required: true
+        type: string
+
+jobs:
+  deploy-frontman:
+    name: Deploy on production
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Save known_hosts file
+        env:
+          KNOWN_HOSTS: ${{ secrets.KNOWN_HOSTS }}
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh
+          echo "$KNOWN_HOSTS" >> ~/.ssh/known_hosts
+
+      - name: Save id_rsa file
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        shell: bash
+        run: |
+          echo "$SSH_PRIVATE_KEY" > id_rsa && chmod 600 id_rsa
+
+      - name: Save vault password to vault.txt
+        env:
+          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD }}
+        shell: bash
+        run: |
+          echo "$VAULT_PASSWORD" > vault.txt && chmod 600 vault.txt
+
+      - name: Run playbook
+        shell: bash
+        run: make ${{ inputs.tasks }}

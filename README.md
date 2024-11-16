@@ -7,19 +7,23 @@ https://getoutline.org/get-started/#step-3
 # Architecture
 ![digram](./diagram.svg)
 
-There are two types of hosts: **frontman** and **proxy**. Frontman should be deployed as a single instance (sharding
-under single DNS record and/or IP address is allowed). Proxies could be deployed as many instances as needed, each instance
-should have dedicated IP address and DNS record (if exists). All hosts should be Debian hosts with public IPs.
+There are 3 types of hosts: **frontman**, **metrics** and **proxy**. Frontman should be deployed as a single instance (sharding
+under single DNS record and/or IP address is allowed). Metrics should be deployed as a single instance (sharding is not allowed).
+Proxies could be deployed as many instances as needed, each instance should have dedicated IP address and DNS record (if exists).
+All hosts should be Debian hosts with public IPs.
 
 ## Frontman
 It is a single linux host with the following tools installed and configured:
 * [nginx](https://nginx.org) (role: `frontmen`) serving static content over HTTPS:
    * static html pages with installation instructions. The user is provided with a private instruction link with a personal ShadowSocks configuration, which the user uses once to install the ShadowSocks configuration
    * personal dynamic ShadowSocks configuration json files ([SIP008](https://shadowsocks.org/doc/sip008.html)) for each client, which is used by ShadowSocks client each time before connecting to a ShadowSocks server
-* [prometheus](https://prometheus.io) (role: `prometheus`): monitoring to detect traffic abuse
 * [certbot](https://certbot.eff.org) (role: `certbot`) for automatic and free renewal of HTTPS certificates used by nginx
 
 Playbook: [frontman.yml](./frontman.yml)
+
+## Metrics
+It is a single linux host with the prometheus installed. Users do not access this host. Host may have no domain name.
+* [prometheus](https://prometheus.io) (role: `prometheus`): monitoring to detect traffic abuse
 
 ## Proxy
 As many proxy hosts as needed could be deployed but each one should have its own IP address and/or DNS record.
@@ -95,7 +99,8 @@ To create a new user, you should:
 Read code and find out
 
 ## How to apply changes to production
-Just push to master branch. GitHub Actions will automatically apply updates to the servers.
+* If you changed deploy code: just push to master branch. GitHub Actions will automatically apply updates to the servers.
+* If you changed list of users: manually trigger [CD | Production](https://github.com/ed-asriyan/proxy-server/actions/workflows/CD-production.yml)
 
 # Development
 ## CD
@@ -104,27 +109,20 @@ The following GitHub secrets are required for CD:
 * `SSH_PRIVATE_KEY`: SSH private key to access servers
 * `VAULT_PASSWORD`: vault password
 
-Successful workflow generates an encrypted `users.csv` you can download to repository root and run the following command
-to decrypt the file:
-```commandline
-make decrypt_uris
-```
-It can be useful for sharing SS URIs with users.
-
 ## Local
 ### Deploy on production
 ```commandline
-make deploy_frontman deploy_proxies
+make deploy_frontman deploy_proxies deploy_metrics
 ```
 
 ### Generate user list table
 ```commandline
-make users_csv_generate
+make generate_users_csv
 ```
 
-### Generate user client
+### Generate UUID for a new user
 ```commandline
-make generate_user
+make generate_uuid
 ```
 
 ### Decrypt string

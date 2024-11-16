@@ -1,0 +1,5 @@
+- hosts:
+    - metrics
+  no_log: true
+  roles:
+    - prometheus

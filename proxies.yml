@@ -2,5 +2,4 @@
     - proxies
   no_log: true
   roles:
-    - node-exporter
     - shadowsocks-gateway

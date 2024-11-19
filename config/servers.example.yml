@@ -1,0 +1,47 @@
+config_servers:
+  server1-uuid:
+    # domain of server that will be put into config
+    host:
+    # description or name of server
+    remarks:
+    # port of shadowsocks to be exposed and used publicly
+    port:
+    # cipher to use in shadowsocks
+    method:
+    # secret (any random string) to be used for generating client passwords
+    secret:
+    # prefix to use. read more: https://www.reddit.com/r/outlinevpn/wiki/index/prefixing
+    prefix:
+    # where regular https requests (non-shadowsocks requests) proxy to
+    fallback_proxy_target:
+    prometheus_metrics:
+      # port where prometheus metrics endpoints should be exposed
+      port:
+      # content of self-signed cert and keys (SSL pem format)
+      tls:
+        certificate:
+        key:
+      shadowsocks:
+        # any random URL-valid string starting with "/"
+        url_path:
+      node_exporter:
+        # any random URL-valid string starting with "/"
+        url_path:
+  # second server (for instance)
+  server2-uuid:
+    host:
+    remarks:
+    port:
+    method:
+    secret:
+    prefix:
+    fallback_proxy_target:
+    prometheus_metrics:
+      port:
+      tls:
+        certificate_path:
+        key_path:
+      shadowsocks:
+        url_path:
+      node_exporter:
+        url_path:

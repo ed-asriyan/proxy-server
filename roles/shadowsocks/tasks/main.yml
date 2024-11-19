@@ -1,3 +1,21 @@
+- name: Ensure required variables are defined
+  assert:
+    that:
+      - shadowsocks_port is number
+      - shadowsocks_listen_address is string
+      - shadowsocks_metrics_port is number
+      - shadowsocks_server_uuid is string
+
+- name: Ensure shadowsocks_users is defined correctly
+  include_tasks: tasks/assert-users.yml
+  vars:
+    users: "{{ shadowsocks_users }}"
+
+- name: Ensure shadowsocks_server is defined correctly
+  include_tasks: tasks/assert-server.yml
+  vars:
+    server: "{{ shadowsocks_server }}"
+
 - name: Create user
   user: name={{ shadowsocks_user }}
 
@@ -28,15 +46,6 @@
     group: "{{ shadowsocks_user }}"
     owner: "{{ shadowsocks_user }}"
     mode: "700"
-
-- name: Load users
-  delegate_to: localhost
-  command: "curl -s {{ users_url }}"
-  register: users_json
-
-- name: Include users variables
-  set_fact:
-    users: "{{ users_json.stdout | from_json }}"
 
 - name: Render outline-ss-server config
   template:

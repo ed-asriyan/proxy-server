@@ -32,10 +32,10 @@ Proxy(ies) is/are linux host(s) with installed
 https://jigsaw.google.com that supports multiple access keys
 * [node-exporter](https://github.com/prometheus/node_exporter) (role: `node-exporter`): Prometheus exporter for hardware and OS metrics
 * [nginx](https://nginx.org) (role: `shadowsocks-gateway`) that proxies traffic:
-  * port 443:
+  * port `config_servers[uuid].port`:
     * if connection is recognized as TLS, request is handled as HTTPS connection
     * otherwise; connection is proxied to ShadoSocks server
-  * port `server.prometheus_metrics.port`: to outline-ss-server and node-exporter metrics endpoints
+  * port `config_servers[uuid].prometheus_metrics.port`: to outline-ss-server and node-exporter metrics endpoints
 
 Playbook: [proxies.yml](./proxies.yml)
 
@@ -50,50 +50,22 @@ only.
       ```commandline
       pre-commit install
       ```
-2. Create `vault.txt` file in the repository root. Put your vault password file in it. **Make sure that only you have
-permissions to read/write it: `chmod 600 vault.txt`!**
 3. If servers are not configured yet, skip this step and go to "New server setup" section. Otherwise if server is already configured, add SSH private key to `id_rsa` file in the root of the local repository. **Make sure that only you have
 permissions to read/write it: `chmod 600 id_rsa`!**
 
+## Initial setup
+1. Go to [config](./config) and setup config files or GitHub Secrets.
+2. Add yout public key (pair of one you created in root of the local repo) to all servers' root user
+3. Run Deploy
+
 ## How to update list of SS users
-Users should be stored in cloud storage providing HTTPS URL returning json in the following format:
-```json
-{
-   "user1_uuid": { "name": "user1_name" },
-   "user2_uuid": { "name": "user2_name" }
-}
-```
-So,
+1. Update config in [config](./config) or update GitHub Secrets.
+2. Run Deploy
 
-To create a new user, you should:
-1. Update use users.json on the URL
-2. Run deploy
-
-## New server setup
-1. Generate new SSH key and store it in `id_rsa` file in the root of the local repository:
-   ```commandline
-   ssh-keygen -t ed25519 -C "your_email@example.com"
-   ```
-   If you have already generated keys, skip this step.
-2. Add content of `is_rsa.pub` file (is also a result of previous command) to `/root/.ssh/authorized_keys` file on a new server. **Make sure that proper access rights are granted: `chmod 700 /root/.ssh && chmod 600 /root/.ssh/authorized_keys`!**
-3. Update [hosts file](inventory/hosts)
-   1. Decrypt hosts file:
-      ```commandline
-      make hosts_decrypt
-      ```
-    2. Add/update servers in the file
-    3. Encrypt hosts file:
-      ```commandline
-      make hosts_encrypt
-      ```
-4. Generate new self-signed SSL cert & key for prometheus metrics endpoints and put the in new directory in `[files](inventory/files):
-   ```commandline
-   openssl req -x509 -addext="subjectAltName = DNS:*.example.com" -sha256 -days 356 -nodes -newkey rsa:2048 -subj "/CN=*.example.com/C=US L=Earth"            -keyout key.pem -out certificate.pem
-   ```
-5. Update inventory variables
-   1. Update list of servers in [vars.yml](inventory/group_vars/all/vars.yml)
-   2. Create a new directory in [group_vars](inventory/group_vars) and provide variable specific to the particular server
-   3. Add server to `proxies` group in [hosts](inventory/hosts) (the file should be decrypted first)
+## How to add anew
+1. Update config in [config](./config) or update GitHub Secrets.
+2. Add yout public key (pair of one you created in root of the local repo) to the new server's root user
+3. Run Deploy
 
 ## How to do smth else
 Read code and find out
@@ -107,7 +79,7 @@ Read code and find out
 The following GitHub secrets are required for CD:
 * `KNOWN_HOSTS`: list of known hosts as in `.ssh/known_hosts`
 * `SSH_PRIVATE_KEY`: SSH private key to access servers
-* `VAULT_PASSWORD`: vault password
+* secrets described in [config](./config)
 
 ## Local
 ### Deploy on production
@@ -123,24 +95,4 @@ make generate_users_csv
 ### Generate UUID for a new user
 ```commandline
 make generate_uuid
-```
-
-### Decrypt string
-```commandline
-ansible-vault decrypt --vault-password-file vault.txt
-```
-
-### Encrypt string
-```commandline
-ansible-vault encrypt --vault-password-file vault.txt
-```
-
-### Decrypt file
-```commandline
-ansible-vault encrypt --vault-password-file vault.txt <file_path>
-```
-
-### Encrypt file
-```commandline
-ansible-vault decrypt --vault-password-file vault.txt <file_path>
 ```

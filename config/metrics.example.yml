@@ -1,0 +1,32 @@
+# extrnal public domain of the host prometheus is running on (e.g. for grafana, or admin)
+config_metrics_domain:
+
+# username for admin authentication
+config_metrics_admin_username:
+
+# bcrypt'ed admin password for authentication
+config_metrics_admin_password_bcrypt:
+
+# how long prometheus should store metrics data
+config_metrics_retention:
+
+# port of prometheus to be exposed and used publicly
+config_metrics_port:
+
+# content of self-signed cert (SSL pem format for HTTPS) - add this to graphana
+config_metrics_certificate: |
+  -----BEGIN CERTIFICATE-----
+  ....
+  -----END CERTIFICATE-----
+
+# content of self-signed key (SSL pem format for HTTPS)
+config_metrics_key: |
+  -----BEGIN PRIVATE KEY-----
+  ....
+  -----END PRIVATE KEY-----
+
+# parameters for https://prometheus.io/docs/practices/remote_write
+config_metrics_remote:
+  url:
+  username:
+  password:

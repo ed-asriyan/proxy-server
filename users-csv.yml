@@ -1,5 +1,12 @@
 - hosts:
     - localhost
   no_log: true
+  vars_files:
+    - ./config/frontman.yml
+    - ./config/users.yml
   roles:
-    - users-csv
+    - role: users-csv
+      vars:
+        users_csv_frontman_domain: "{{ config_frontman_domain }}"
+        users_csv_frontman_port: "{{ config_frontman_port }}"
+        users_csv_users: "{{ config_users }}"

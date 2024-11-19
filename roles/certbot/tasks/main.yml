@@ -1,3 +1,12 @@
+- name: Ensure required variables are defined
+  assert:
+    that:
+      - certbot_domain is string
+      - certbot_service_name is string
+      - certbot_email is string
+      - certbot_post_hook is string
+      - certbot_repeat_interval is string
+
 - name: Install certbot
   package:
     name: certbot

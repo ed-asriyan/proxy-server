@@ -7,8 +7,8 @@ services:
       - type: udp
         address: "{{ shadowsocks_listen_address }}:{{ shadowsocks_port }}"
     keys:
-{% for user in users | dict2items %}
-      - cipher: {{ server.method }}
+{% for user in shadowsocks_users | dict2items %}
+      - cipher: {{ shadowsocks_server.method }}
         id: {{ user.value.name }}
-        secret: {{ (user.key + server.port | string + server.method + server.uuid | string + server.secret | string) | hash('sha512') }}
+        secret: {{ (user.key + shadowsocks_server.port | string + shadowsocks_server.method + shadowsocks_server_uuid | string + shadowsocks_server.secret | string) | hash('sha512') }}
 {% endfor %}

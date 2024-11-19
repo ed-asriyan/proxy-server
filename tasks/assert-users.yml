@@ -1,0 +1,8 @@
+# required vars:
+# - users
+
+- name: Ensure servers variable is defined correctly
+  assert:
+    that:
+      - item.value.name is string
+  with_items: "{{ users | dict2items }}"

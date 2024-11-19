@@ -1,17 +1,15 @@
 # linux user to run shadowsocks-gateway as
 shadowsocks_gateway_user: shadowsocks-gateway
-# where regular https requests (non-shadowsocks requests) proxy to
-shadowsocks_gateway_fallback_proxy_target: !vault |
-  $ANSIBLE_VAULT;1.1;AES256
-  37333637313939636530653837626436396562306537353834326662383835353162393962336439
-  6430373734363064656263373964363839643862326433660a383630663561313838666335343462
-  65376263643234313439393933393262393932323664653030616432303439363164666539636362
-  6139373831393530360a663130336433373266333635303637393735313932336131326162373734
-  3066
 # number of worker_connections in nginx
 shadowsocks_gateway_worker_connections: 65536
 # number of worker_rlimit_nofile in nginx
 shadowsocks_gateway_worker_rlimit_nofile: 65536
+# port node_exporter to run on
+shadowsocks_gateway_node_exporter_port: 47354
+# port shadowsocks-metrics to run on
+shadowsocks_gateway_shadowsocks_metrics_port: 27364
+# port shadowsocks to run on locally
+shadowsocks_gateway_shadowsocks_port: 52539
 
 shadowsocks_gateway_nginx_conf_filename: nginx.conf
 shadowsocks_gateway_certificate_filename: cert.pem

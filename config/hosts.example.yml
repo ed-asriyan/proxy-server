@@ -1,0 +1,35 @@
+all:
+  hosts:
+    frontman:
+      # public domain or IP where frontman should be deployed (if ssh and https are on the same IP, it should be equal to config_frontman_domain value)
+      ansible_host:
+      # linux user to connect to ssh to the server as
+      ansible_user:
+    metrics:
+      # public domain or IP where metrics server should be deployed
+      ansible_host:
+      # linux user to connect to ssh to the server as
+      ansible_user:
+    proxy1:
+      # uuid of the shadowsocks server that should be deployed (from config/servers.yml)
+      hosts_server_uuid:
+      # public domain or IP where shadowsocks should be deployed (if ssh and shadowsocks are on the same IP, it should be equal to config_servers[hosts_server_uuid].host value)
+      ansible_host:
+      # linux user to connect to ssh to the server as
+      ansible_user:
+    # more proxy servers...
+    proxy2:
+      hosts_server_uuid:
+      ansible_host:
+      ansible_user:
+    proxy3:
+      hosts_server_uuid:
+      ansible_host:
+      ansible_user:
+  children:
+    proxies:
+      hosts:
+        # don't forget to add proxy servers here (yes, as empty objects)
+        proxy1:
+        proxy2:
+        proxy3:

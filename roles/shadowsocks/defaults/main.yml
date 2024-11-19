@@ -1,0 +1,12 @@
+# port of metrics for prometheus to be exposed
+shadowsocks_metrics_port:
+# port of shadowsocks behind gateway
+shadowsocks_port:
+# shadowsocks listen address
+shadowsocks_listen_address:
+# users as described in /users-example.yml
+shadowsocks_users:
+# one(!) server item as secribed in /servers-example.yml
+shadowsocks_server:
+# server uuid as in /servers-example.yml
+shadowsocks_server_uuid:

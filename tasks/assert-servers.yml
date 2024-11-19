@@ -1,0 +1,13 @@
+# required vars:
+# - servers
+
+- name: Ensure servers variable is defined correctly
+  assert:
+    that:
+      - servers is mapping
+
+- name: Ensure servers is defined correctly
+  include_tasks: tasks/assert-server.yml
+  vars:
+    server: "{{ item.value }}"
+  with_items: "{{ servers | dict2items }}"

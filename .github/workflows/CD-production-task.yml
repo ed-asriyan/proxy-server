@@ -37,12 +37,40 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > id_rsa && chmod 600 id_rsa
 
-      - name: Save vault password to vault.txt
+      - name: Render FRONTMAN secret into config/frontman.yml
         env:
-          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD }}
+          FRONTMAN: ${{ secrets.FRONTMAN }}
         shell: bash
         run: |
-          echo "$VAULT_PASSWORD" > vault.txt && chmod 600 vault.txt
+          echo "$FRONTMAN" > config/frontman.yml
+
+      - name: Render HOSTS secret into config/hosts.yml
+        env:
+          HOSTS: ${{ secrets.HOSTS }}
+        shell: bash
+        run: |
+          echo "$HOSTS" > config/hosts.yml
+
+      - name: Render METRICS secret into config/metrics.yml
+        env:
+          METRICS: ${{ secrets.METRICS }}
+        shell: bash
+        run: |
+          echo "$METRICS" > config/metrics.yml
+
+      - name: Render SERVERS secret into config/servers.yml
+        env:
+          SERVERS: ${{ secrets.SERVERS }}
+        shell: bash
+        run: |
+          echo "$SERVERS" > config/servers.yml
+
+      - name: Render USERS secret into config/users.yml
+        env:
+          USERS: ${{ secrets.USERS }}
+        shell: bash
+        run: |
+          echo "$USERS" > config/users.yml
 
       - name: Run playbook
         shell: bash

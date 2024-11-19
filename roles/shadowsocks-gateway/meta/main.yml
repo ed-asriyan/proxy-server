@@ -3,5 +3,11 @@ dependencies:
   - role: shadowsocks
     vars:
       shadowsocks_listen_address: 127.0.0.1
+      shadowsocks_port: "{{ shadowsocks_gateway_shadowsocks_port }}"
+      shadowsocks_metrics_port: "{{ shadowsocks_gateway_shadowsocks_metrics_port }}"
+      shadowsocks_server_uuid: "{{ shadowsocks_gateway_server_uuid }}"
+      shadowsocks_server: "{{ shadowsocks_gateway_server }}"
+      shadowsocks_users: "{{ shadowsocks_gateway_users }}"
   - role: node-exporter
-    when: "'prometheus_metrics' in server"
+    vars:
+      node_exporter_port: "{{ shadowsocks_gateway_node_exporter_port }}"

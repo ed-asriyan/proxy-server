@@ -1,0 +1,23 @@
+
+# username for admin authentication
+prometheus_username:
+# bcrypt'ed admin password for authentication
+prometheus_password_bcrypt:
+
+# how long prometheus should store metrics data
+prometheus_retention:
+
+# port of prometheus to be exposed and used publicly
+prometheus_port:
+
+# parameters for https://prometheus.io/docs/practices/remote_write
+prometheus_remote:
+  url:
+  username:
+  password:
+
+# servers object as described in /servers-example.yml
+prometheus_servers:
+
+# extrnal public domain of the host prometheus is running on
+prometheus_domain:

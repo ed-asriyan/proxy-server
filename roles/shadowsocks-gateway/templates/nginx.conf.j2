@@ -18,27 +18,26 @@ http {
         listen *:80;
         listen [::]:80;
         server_name _;
-        return 301 https://{{ shadowsocks_gateway_fallback_proxy_target }};
+        return 301 https://{{ shadowsocks_gateway_server.fallback_proxy_target }};
     }
 
-{% if 'prometheus_metrics' in server %}
     server {
         access_log {{ shadowsocks_gateway_prometheus_access_log_path }};
         error_log {{ shadowsocks_gateway_prometheus_error_log_path }};
 
-        listen *:{{ server.prometheus_metrics.port }} ssl http2;
-        listen [::]:{{ server.prometheus_metrics.port }} ssl http2;
+        listen *:{{ shadowsocks_gateway_server.prometheus_metrics.port }} ssl http2;
+        listen [::]:{{ shadowsocks_gateway_server.prometheus_metrics.port }} ssl http2;
 
         ssl_certificate {{ shadowsocks_gateway_certificate_path }};
         ssl_certificate_key {{ shadowsocks_gateway_key_path }};
         ssl_protocols TLSv1.2 TLSv1.3;
 
-        location {{ server.prometheus_metrics.shadowsocks.url_path }} {
-            proxy_pass http://localhost:{{ shadowsocks_metrics_port }}/metrics;
+        location {{ shadowsocks_gateway_server.prometheus_metrics.shadowsocks.url_path }} {
+            proxy_pass http://127.0.0.1:{{ shadowsocks_gateway_shadowsocks_metrics_port }}/metrics;
         }
 
-        location {{ server.prometheus_metrics.node_exporter.url_path }} {
-            proxy_pass http://localhost:{{ node_exporter_port }}/metrics;
+        location {{ shadowsocks_gateway_server.prometheus_metrics.node_exporter.url_path }} {
+            proxy_pass http://127.0.0.1:{{ shadowsocks_gateway_node_exporter_port }}/metrics;
         }
 
         location / {
@@ -51,7 +50,6 @@ http {
             return 444;
         }
     }
-{% endif %}
 }
 
 stream {
@@ -84,15 +82,15 @@ stream {
     }
 
     upstream https_backend {
-        server {{ shadowsocks_gateway_fallback_proxy_target }};
+        server {{ shadowsocks_gateway_server.fallback_proxy_target }};
     }
 
     upstream shadowsocks_backend {
-        server localhost:{{ shadowsocks_port }};
+        server 127.0.0.1:{{ shadowsocks_gateway_shadowsocks_port }};
     }
 
     server {
-        listen *:{{ server.port }};
+        listen *:{{ shadowsocks_gateway_server.port }};
         proxy_timeout 5s;
         ssl_preread on;
 
@@ -102,7 +100,7 @@ stream {
     }
 
     server {
-        listen *:{{ server.port }} udp;
+        listen *:{{ shadowsocks_gateway_server.port }} udp;
 
         access_log off;
         error_log ../../..{{ shadowsocks_gateway_udp_error_log_path }};

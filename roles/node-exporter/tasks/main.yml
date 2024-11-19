@@ -1,3 +1,8 @@
+- name: Ensure required variables are defined
+  assert:
+    that:
+      - node_exporter_port is number
+
 - name: Create user
   user: name={{ node_exporter_user }}
 

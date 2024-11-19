@@ -1,0 +1,25 @@
+# required vars:
+# - server
+
+- name: Ensure server variable is defined correctly
+  assert:
+    that:
+      - server is mapping
+
+- name: Ensure server variable is defined correctly
+  assert:
+    that:
+      - server.host is string
+      - server.remarks is string
+      - server.port is number
+      - server.method is string
+      - server.secret is string
+      - server.prefix is string
+      - server.fallback_proxy_target is string
+      - server.prometheus_metrics.port is number
+      - server.prometheus_metrics.tls.certificate is string
+      - server.prometheus_metrics.tls.key is string
+      - server.prometheus_metrics.shadowsocks is mapping
+      - server.prometheus_metrics.shadowsocks.url_path is string
+      - server.prometheus_metrics.node_exporter is mapping
+      - server.prometheus_metrics.node_exporter.url_path is string

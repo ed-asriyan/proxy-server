@@ -1,0 +1,6 @@
+# server uuid as in /servers-example.yml
+shadowsocks_server_uuid:
+# one(!) server item as secribed in /servers-example.yml
+shadowsocks_server:
+# users as described in /users-example.yml
+shadowsocks_users:

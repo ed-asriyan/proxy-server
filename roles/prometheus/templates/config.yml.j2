@@ -1,12 +1,14 @@
 global:
   scrape_interval: 1m
 scrape_configs:
-{% for server in servers %}
-{% if 'prometheus_metrics' in server %}
+{% for server_item in prometheus_servers | dict2items %}
+  {% set server = server_item.value %}
+  {% set server_uuid = server_item.key %}
+
   - job_name: 'shadowsocks-{{ server.host }}'
     scheme: https
     tls_config:
-      ca_file: '/home/{{ prometheus_user }}/{{ prometheus_scrape_ssl_certs_dir_name }}/{{ server.uuid }}-{{ prometheus_scrape_ssl_cert_filename_suffix }}'
+      ca_file: '/home/{{ prometheus_user }}/{{ prometheus_scrape_ssl_certs_dir_name }}/{{ server_uuid }}-{{ prometheus_scrape_ssl_cert_filename_suffix }}'
     metrics_path: '{{ server.prometheus_metrics.shadowsocks.url_path }}'
     static_configs:
       - targets:
@@ -16,15 +18,15 @@ scrape_configs:
   - job_name: 'node-exporter-{{ server.host }}'
     scheme: https
     tls_config:
-      ca_file: '/home/{{ prometheus_user }}/{{ prometheus_scrape_ssl_certs_dir_name }}/{{ server.uuid }}-{{ prometheus_scrape_ssl_cert_filename_suffix }}'
+      ca_file: '/home/{{ prometheus_user }}/{{ prometheus_scrape_ssl_certs_dir_name }}/{{ server_uuid }}-{{ prometheus_scrape_ssl_cert_filename_suffix }}'
     metrics_path: '{{ server.prometheus_metrics.node_exporter.url_path }}'
     static_configs:
       - targets:
         - '{{ server.host }}:{{ server.prometheus_metrics.port }}'
         labels:
           instance: '{{ server.host }}'
-{% endif %}
 {% endfor %}
+
 remote_write:
   - url: {{ prometheus_remote.url }}
     basic_auth:

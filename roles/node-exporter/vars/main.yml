@@ -17,5 +17,3 @@ node_exporter_downloads:
     directory: node_exporter-1.7.0.linux-armv7
 # name of node-exporter executable file
 node_exporter_executable_name: node_exporter
-# port for node-exporter dependency
-node_exporter_port: 9092

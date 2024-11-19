@@ -1,5 +1,12 @@
 - hosts:
     - proxies
   no_log: true
+  vars_files:
+    - ./config/users.yml
+    - ./config/servers.yml
   roles:
-    - shadowsocks-gateway
+    - role: shadowsocks-gateway
+      vars:
+        shadowsocks_gateway_server_uuid: "{{ hosts_server_uuid }}"
+        shadowsocks_gateway_server: "{{ config_servers[shadowsocks_gateway_server_uuid] }}"
+        shadowsocks_gateway_users: "{{ config_users }}"

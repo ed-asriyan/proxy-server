@@ -1,0 +1,2 @@
+# the port node_exporter should locally (localhost) export http metrics on
+node_exporter_port: 9092

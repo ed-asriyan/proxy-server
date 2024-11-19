@@ -1,0 +1,11 @@
+# users object with fields structure as in <repo-root>/users-exaple.yml
+users_csv_users:
+
+# public domain of frontman (with instruction html and config json files)
+users_csv_frontman_domain:
+
+# port users should connect to for instructions and json configs by https
+users_csv_frontman_port:
+
+# output file name
+users_csv_output_file: "users.csv"

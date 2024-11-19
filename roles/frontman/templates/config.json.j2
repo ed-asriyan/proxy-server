@@ -1,15 +1,17 @@
 {
     "version": 1,
     "servers": [
-        {% for server in servers %}
+        {% for server_item in frontman_servers | dict2items %}
+            {% set frontman_server_uuid = server_item.key %}
+            {% set frontman_server = server_item.value %}
             {
-                "id": "{{ server.uuid }}",
-                "remarks": "{{ server.remarks }}",
-                "server": "{{ server.host }}",
-                "server_port": {{ server.port }},
-                "password": "{{ (user_uuid + server.port | string + server.method + server.uuid | string + server.secret | string) | hash('sha512') }}",
-                "method": "{{ server.method }}",
-                "prefix": "{{ server.prefix }}"
+                "id": "{{ frontman_server_uuid }}",
+                "remarks": "{{ frontman_server.remarks }}",
+                "server": "{{ frontman_server.host }}",
+                "server_port": {{ frontman_server.port }},
+                "password": "{{ (frontman_user_uuid + frontman_server.port | string + frontman_server.method + frontman_server_uuid | string + frontman_server.secret | string) | hash('sha512') }}",
+                "method": "{{ frontman_server.method }}",
+                "prefix": "{{ frontman_server.prefix }}"
             }
             {% if not loop.last %}
             ,
@@ -17,13 +19,13 @@
         {% endfor %}
     ],
 
-    "instruction_url": "https://{{ frontman_domain }}:{{ frontman_port }}/{{ instruction_filename }}#{{ user_uuid }}",
+    "instruction_url": "https://{{ frontman_domain }}:{{ frontman_port }}/{{ frontman_instruction_filename }}#{{ frontman_user_uuid }}",
 
     "comment": "the fields below are specifically for Outline client as it does not support the latest version of SIP008",
 
-    "method": "{{ default_server.method }}",
-    "password": "{{ (user_uuid + default_server.port | string + default_server.method + default_server.uuid | string + default_server.secret | string) | hash('sha512') }}",
-    "prefix": "{{ default_server.prefix }}",
-    "server":"{{ default_server.host }}",
-    "server_port": {{ default_server.port }}
+    "method": "{{ frontman_default_server.method }}",
+    "password": "{{ (frontman_user_uuid + frontman_default_server.port | string + frontman_default_server.method + frontman_default_server_uuid | string + frontman_default_server.secret | string) | hash('sha512') }}",
+    "prefix": "{{ frontman_default_server.prefix }}",
+    "server":"{{ frontman_default_server.host }}",
+    "server_port": {{ frontman_default_server.port }}
 }

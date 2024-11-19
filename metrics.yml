@@ -1,5 +1,18 @@
 - hosts:
     - metrics
   no_log: true
+  vars_files:
+    - ./config/metrics.yml
+    - ./config/servers.yml
   roles:
-    - prometheus
+    - role: prometheus
+      vars:
+        prometheus_username: "{{ config_metrics_admin_username }}"
+        prometheus_password_bcrypt: "{{ config_metrics_admin_password_bcrypt }}"
+        prometheus_retention: "{{ config_metrics_retention }}"
+        prometheus_port: "{{ config_metrics_port }}"
+        prometheus_certificate: "{{ config_metrics_certificate }}"
+        prometheus_key: "{{ config_metrics_key }}"
+        prometheus_domain: "{{ config_metrics_domain }}"
+        prometheus_remote: "{{ config_metrics_remote }}"
+        prometheus_servers: "{{ config_servers }}"

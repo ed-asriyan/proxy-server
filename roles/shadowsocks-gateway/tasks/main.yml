@@ -1,3 +1,18 @@
+- name: Ensure required variables are defined
+  assert:
+    that:
+      - shadowsocks_gateway_server_uuid is string
+
+- name: Ensure shadowsocks_gateway_users is defined correctly
+  include_tasks: tasks/assert-users.yml
+  vars:
+    users: "{{ shadowsocks_gateway_users }}"
+
+- name: Ensure shadowsocks_gateway_server is defined correctly
+  include_tasks: tasks/assert-server.yml
+  vars:
+    server: "{{ shadowsocks_gateway_server }}"
+
 - name: Install libnginx-mod-stream
   package:
     name: libnginx-mod-stream
@@ -17,23 +32,21 @@
 
 - name: Copy SSL key
   copy:
-    src: "{{ server.prometheus_metrics.tls.key_path }}"
+    content: "{{ shadowsocks_gateway_server.prometheus_metrics.tls.key }}"
     dest: "{{ shadowsocks_gateway_key_path }}"
     group: "{{ shadowsocks_gateway_user }}"
     owner: "{{ shadowsocks_gateway_user }}"
     mode: "600"
   register: ssl_key
-  when: "{{ 'prometheus_metrics' in server }}"
 
 - name: Copy SSL certificate
   copy:
-    src: "{{ server.prometheus_metrics.tls.certificate_path }}"
+    content: "{{ shadowsocks_gateway_server.prometheus_metrics.tls.certificate }}"
     dest: "{{ shadowsocks_gateway_certificate_path }}"
     group: "{{ shadowsocks_gateway_user }}"
     owner: "{{ shadowsocks_gateway_user }}"
     mode: "600"
   register: ssl_cert
-  when: "{{ 'prometheus_metrics' in server }}"
 
 - name: Remove unexpected files in home
   include_tasks: tasks/remove-unexpected-files.yml

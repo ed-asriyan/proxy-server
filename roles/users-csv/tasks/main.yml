@@ -1,15 +1,18 @@
-- name: Load users
-  delegate_to: localhost
-  command: "curl -s {{ users_url }}"
-  register: users_json
+- name: Ensure required variables are defined
+  assert:
+    that:
+      - users_csv_frontman_domain is string
+      - users_csv_frontman_port is number
+      - users_csv_output_file is string
 
-- name: Load users
-  set_fact:
-    users: "{{ users_json.stdout | from_json }}"
+- name: Ensure users_csv_users is defined correctly
+  include_tasks: tasks/assert-users.yml
+  vars:
+    users: "{{ users_csv_users }}"
 
 - name: Render users.csv
   become: false
   delegate_to: localhost
   template:
     src: users.csv.j2
-    dest: "users.csv"
+    dest: "{{ users_csv_output_file }}"

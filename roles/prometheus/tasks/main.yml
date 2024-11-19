@@ -1,3 +1,21 @@
+- name: Ensure required variables are defined
+  assert:
+    that:
+      - prometheus_username is string
+      - prometheus_password_bcrypt is string
+      - prometheus_retention is string
+      - prometheus_port is number
+      - prometheus_remote is mapping
+      - prometheus_remote.url is string
+      - prometheus_remote.username is string
+      - prometheus_remote.password is string
+      - prometheus_domain is string
+
+- name: Ensure prometheus_servers is defined correctly
+  include_tasks: tasks/assert-servers.yml
+  vars:
+    servers: "{{ prometheus_servers }}"
+
 - name: Create user
   user: name={{ prometheus_user }}
 
@@ -28,7 +46,7 @@
 
 - name: Copy SSL key
   copy:
-    src: key.pem
+    content: "{{ prometheus_key }}"
     dest: "{{ prometheus_ssl_key_path }}"
     group: "{{ prometheus_user }}"
     owner: "{{ prometheus_user }}"
@@ -37,7 +55,7 @@
 
 - name: Copy SSL certificate
   copy:
-    src: certificate.pem
+    content: "{{ prometheus_certificate }}"
     dest: "{{ prometheus_ssl_cert_path }}"
     group: "{{ prometheus_user }}"
     owner: "{{ prometheus_user }}"
@@ -51,20 +69,19 @@
 
 - name: Copy scrape targets SSL certificates
   copy:
-    src: "{{ item.prometheus_metrics.tls.certificate_path }}"
-    dest: "/home/{{ prometheus_user }}/{{ prometheus_scrape_ssl_certs_dir_name }}/{{ item.uuid }}-{{ prometheus_scrape_ssl_cert_filename_suffix }}"
+    content: "{{ item.value.prometheus_metrics.tls.certificate }}"
+    dest: "/home/{{ prometheus_user }}/{{ prometheus_scrape_ssl_certs_dir_name }}/{{ item.key }}-{{ prometheus_scrape_ssl_cert_filename_suffix }}"
     group: "{{ prometheus_user }}"
     owner: "{{ prometheus_user }}"
     mode: "600"
-  with_items: "{{ servers }}"
-  when: "'prometheus_metrics' in item"
+  with_dict: "{{ prometheus_servers }}"
   register: ssl_scrape_cert
 
 - name: Remove unexpected files in directory for scrape targets certs
   include_tasks: tasks/remove-unexpected-files.yml
   vars:
     directory: "/home/{{ prometheus_user }}/{{ prometheus_scrape_ssl_certs_dir_name }}"
-    files: "{{ servers | map(attribute='uuid') | map('regex_replace', '^(.*)$', '\\1-' + prometheus_scrape_ssl_cert_filename_suffix) | list }}"
+    files: "{{ prometheus_servers | dict2items | map(attribute='key') | map('regex_replace', '^(.*)$', '\\1-' + prometheus_scrape_ssl_cert_filename_suffix) | list }}"
 
 - name: Render prometheus config
   template:

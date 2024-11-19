@@ -1,0 +1,7 @@
+config_users:
+  user1-uuid:
+    name: user1_name
+  user2-uuid:
+    name: user2_name
+  user3-uuid:
+    name: user3_name

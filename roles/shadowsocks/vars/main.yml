@@ -16,8 +16,3 @@ shadowsocks_executable_name: outline-ss-server
 # replay defense; see https://github.com/Jigsaw-Code/outline-ss-server/blob/master/service/PROBES.md for details
 shadowsocks_replay_history: 10000
 # port of metrics for prometheus to be exposed
-shadowsocks_metrics_port: 9091
-# port of shadowsocks behind gateway
-shadowsocks_port: 46365
-# shadowsocks listen address
-shadowsocks_listen_address:

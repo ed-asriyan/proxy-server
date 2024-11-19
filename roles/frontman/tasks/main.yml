@@ -1,3 +1,21 @@
+- name: Ensure required variables are defined
+  assert:
+    that:
+      - frontman_domain is string
+      - frontman_port is number
+      - frontman_certbot_email is string
+      - frontman_default_redirect is string
+
+- name: Ensure frontman_users is defined correctly
+  include_tasks: tasks/assert-users.yml
+  vars:
+    users: "{{ frontman_users }}"
+
+- name: Ensure frontman_servers is defined correctly
+  include_tasks: tasks/assert-servers.yml
+  vars:
+    servers: "{{ frontman_servers }}"
+
 - name: Install rsync
   package:
     name: rsync
@@ -7,17 +25,17 @@
   user: name={{ frontman_user }}
 
 - set_fact:
-    static_root_local: "/tmp/{{ frontman_static_directory_filename }}"
-    instruction_filename: "{{ lookup('community.general.random_string', length=32, special=False) }}.html"
+    frontman_static_root_local: "/tmp/{{ frontman_static_directory_filename }}"
+    frontman_instruction_filename: "{{ lookup('community.general.random_string', length=32, special=False) }}.html"
 
 - set_fact:
-    instruction_url: "https://{{ frontman_domain }}:{{ frontman_port }}/{{ instruction_filename }}"
+    instruction_url: "https://{{ frontman_domain }}:{{ frontman_port }}/{{ frontman_instruction_filename }}"
 
 - name: Create static directory locally
   delegate_to: localhost
   become: false
   file:
-    path: "{{ static_root_local }}"
+    path: "{{ frontman_static_root_local }}"
     state: directory
 
 - name: Render index.html
@@ -25,47 +43,39 @@
   become: false
   template:
     src: index.html.j2
-    dest: "{{ static_root_local }}/index.html"
+    dest: "{{ frontman_static_root_local }}/index.html"
 
 - name: Render guide.html
   delegate_to: localhost
   become: false
   copy:
     src: guide.html
-    dest: "{{ static_root_local }}/{{ instruction_filename }}"
+    dest: "{{ frontman_static_root_local }}/{{ frontman_instruction_filename }}"
 
 - name: Copy robots.txt
   delegate_to: localhost
   become: false
   copy:
     src: robots.txt
-    dest: "{{ static_root_local }}/robots.txt"
-
-- name: Load users
-  delegate_to: localhost
-  command: "curl -s {{ users_url }}"
-  register: users_json
-
-- name: Load users
-  set_fact:
-    users: "{{ users_json.stdout | from_json }}"
+    dest: "{{ frontman_static_root_local }}/robots.txt"
 
 - name: Render configs
   delegate_to: localhost
   become: false
   template:
     src: config.json.j2
-    dest: "{{ static_root_local }}/{{ item.key }}"
-  with_items: "{{ users | dict2items }}"
+    dest: "{{ frontman_static_root_local }}/{{ item.key }}"
+  with_items: "{{ frontman_users | dict2items }}"
   loop_control:
     index_var: loop_index
   vars:
-    user_uuid: "{{ item.key }}"
-    default_server: "{{ servers[loop_index % (servers | length)] }}"
+    frontman_user_uuid: "{{ item.key }}"
+    frontman_default_server: "{{ (frontman_servers | dict2items)[loop_index % (frontman_servers | length)].value }}"
+    frontman_default_server_uuid: "{{ (frontman_servers | dict2items)[loop_index % (frontman_servers | length)].key }}"
 
 - name: Synchronize local static root with remote host
   synchronize:
-    src: "{{ static_root_local }}"
+    src: "{{ frontman_static_root_local }}"
     dest: "/home/{{ frontman_user }}"
     recursive: yes
     archive: no
@@ -76,12 +86,12 @@
   delegate_to: localhost
   become: false
   file:
-    path: "{{ static_root_local }}"
+    path: "{{ frontman_static_root_local }}"
     state: absent
 
 - name: Copy SSL key
   copy:
-    src: "{{ ssl_key_path }}"
+    src: "{{ frontman_letsencrypt_ssl_key_path }}"
     dest: "{{ frontman_ssl_key_path }}"
     group: "{{ frontman_user }}"
     owner: "{{ frontman_user }}"
@@ -91,7 +101,7 @@
 
 - name: Copy SSL certificate
   copy:
-    src: "{{ ssl_cert_path }}"
+    src: "{{ frontman_letsencrypt_ssl_cert_path }}"
     dest: "{{ frontman_ssl_cert_path }}"
     group: "{{ frontman_user }}"
     owner: "{{ frontman_user }}"

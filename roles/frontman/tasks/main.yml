@@ -70,8 +70,8 @@
     index_var: loop_index
   vars:
     frontman_user_uuid: "{{ item.key }}"
-    frontman_default_server: "{{ (frontman_servers | dict2items)[loop_index % (frontman_servers | length)].value }}"
-    frontman_default_server_uuid: "{{ (frontman_servers | dict2items)[loop_index % (frontman_servers | length)].key }}"
+    frontman_default_server: "{{ frontman_servers[frontman_default_server_uuid] }}"
+    frontman_default_server_uuid: "{{ item.value.preferred_server_uuid if 'preferred_server_uuid' in item.value else (frontman_servers | dict2items)[loop_index % (frontman_servers | length)].key }}"
 
 - name: Synchronize local static root with remote host
   synchronize:

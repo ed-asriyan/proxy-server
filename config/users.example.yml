@@ -1,6 +1,8 @@
 config_users:
   user1-uuid:
     name: user1_name
+    # optional. preferred server uuid
+    preferred_server_uuid: server1-uuid
   user2-uuid:
     name: user2_name
   user3-uuid:

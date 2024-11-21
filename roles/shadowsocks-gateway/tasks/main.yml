@@ -37,6 +37,7 @@
     group: "{{ shadowsocks_gateway_user }}"
     owner: "{{ shadowsocks_gateway_user }}"
     mode: "600"
+  when: shadowsocks_gateway_server.prometheus_metrics is mapping
   register: ssl_key
 
 - name: Copy SSL certificate
@@ -46,6 +47,7 @@
     group: "{{ shadowsocks_gateway_user }}"
     owner: "{{ shadowsocks_gateway_user }}"
     mode: "600"
+  when: shadowsocks_gateway_server.prometheus_metrics is mapping
   register: ssl_cert
 
 - name: Remove unexpected files in home

@@ -65,6 +65,9 @@
 - name: Create directory for scrape targets certs
   file:
     path: "/home/{{ prometheus_user }}/{{ prometheus_scrape_ssl_certs_dir_name }}"
+    group: "{{ prometheus_user }}"
+    owner: "{{ prometheus_user }}"
+    mode: "700"
     state: directory
 
 - name: Copy scrape targets SSL certificates
@@ -75,6 +78,7 @@
     owner: "{{ prometheus_user }}"
     mode: "600"
   with_dict: "{{ prometheus_servers }}"
+  when: item.value.prometheus_metrics is mapping
   register: ssl_scrape_cert
 
 - name: Remove unexpected files in directory for scrape targets certs

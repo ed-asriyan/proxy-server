@@ -2,9 +2,9 @@ global:
   scrape_interval: 1m
 scrape_configs:
 {% for server_item in prometheus_servers | dict2items %}
-  {% set server = server_item.value %}
-  {% set server_uuid = server_item.key %}
-
+{% set server = server_item.value %}
+{% set server_uuid = server_item.key %}
+{% if server.prometheus_metrics is mapping %}
   - job_name: 'shadowsocks-{{ server.host }}'
     scheme: https
     tls_config:
@@ -25,6 +25,7 @@ scrape_configs:
         - '{{ server.host }}:{{ server.prometheus_metrics.port }}'
         labels:
           instance: '{{ server.host }}'
+{% endif %}
 {% endfor %}
 
 remote_write:

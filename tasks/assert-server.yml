@@ -16,6 +16,12 @@
       - server.secret is string
       - server.prefix is string
       - server.fallback_proxy_target is string
+      - server.prometheus_metrics is mapping or server.prometheus_metrics == false
+
+- name: Ensure serve.prometheus_metrics variable is defined correctly
+  when: server.prometheus_metrics is mapping
+  assert:
+    that:
       - server.prometheus_metrics.port is number
       - server.prometheus_metrics.tls.certificate is string
       - server.prometheus_metrics.tls.key is string

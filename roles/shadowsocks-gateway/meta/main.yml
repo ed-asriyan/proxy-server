@@ -9,5 +9,6 @@ dependencies:
       shadowsocks_server: "{{ shadowsocks_gateway_server }}"
       shadowsocks_users: "{{ shadowsocks_gateway_users }}"
   - role: node-exporter
+    when: shadowsocks_gateway_server.prometheus_metrics is mapping
     vars:
       node_exporter_port: "{{ shadowsocks_gateway_node_exporter_port }}"

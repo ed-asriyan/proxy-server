@@ -21,6 +21,7 @@ http {
         return 301 https://{{ shadowsocks_gateway_server.fallback_proxy_target }};
     }
 
+{% if shadowsocks_gateway_server.prometheus_metrics is mapping %}
     server {
         access_log {{ shadowsocks_gateway_prometheus_access_log_path }};
         error_log {{ shadowsocks_gateway_prometheus_error_log_path }};
@@ -50,6 +51,7 @@ http {
             return 444;
         }
     }
+{% endif %}
 }
 
 stream {

@@ -14,13 +14,21 @@ config_servers:
     prefix:
     # where regular https requests (non-shadowsocks requests) proxy to
     fallback_proxy_target:
+    # if you don't want to install prometheus on the server, replace yaml object to boolean false:
+    # prometheus_metrics: false
     prometheus_metrics:
       # port where prometheus metrics endpoints should be exposed
       port:
       # content of self-signed cert and keys (SSL pem format)
       tls:
-        certificate:
-        key:
+        certificate: |
+            -----BEGIN CERTIFICATE-----
+            ....
+            -----END CERTIFICATE-----
+        key: |
+            -----BEGIN PRIVATE KEY-----
+            ....
+            -----END PRIVATE KEY-----
       shadowsocks:
         # any random URL-valid string starting with "/"
         url_path:

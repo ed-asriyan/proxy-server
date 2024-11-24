@@ -1,0 +1,2 @@
+# where redirect to if user opened index page without valid parameters
+config_users_configs_default_redirect:

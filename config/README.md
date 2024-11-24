@@ -4,7 +4,7 @@ This directory contains configuration files.
 ## How to edit
 ### If you use GitHub Actions
 Create the following secrets:
-* `FRONTMAN`: copy content of [frontman.example.yml](./frontman.example.yml) to the secret and fill out each variable
+* `USERS_CONFIGS`: copy content of [users-configs.example.yml](./users-configs.example.yml) to the secret and fill out each variable
 * `SERVERS`: copy content of [servers.example.yml](./servers.example.yml) to the secret and fill out each variable
 * `HOSTS`: copy content of [hosts.example.yml](./hosts.example.yml) to the secret and fill out each variable
 * `METRICS`: copy content of [metrics.example.yml](./metrics.example.yml) to the secret and fill out each variable

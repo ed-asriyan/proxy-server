@@ -10,16 +10,69 @@ on:
       - master
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
-  deploy-frontman:
+  deploy-proxies:
     name: Deploy on production
     uses: ./.github/workflows/CD-production-task.yml
     strategy:
       matrix:
         task:
-          - deploy_frontman
           - deploy_metrics
           - deploy_proxies
     with:
       tasks: ${{ matrix.task }}
     secrets: inherit
+
+  deploy-frontman:
+    name: Deploy on production
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Render USERS_CONFIGS secret into config/users_configs.yml
+        env:
+          USERS_CONFIGS: ${{ secrets.USERS_CONFIGS }}
+        shell: bash
+        run: |
+          echo "$USERS_CONFIGS" > config/users-configs.yml
+
+      - name: Render SERVERS secret into config/servers.yml
+        env:
+          SERVERS: ${{ secrets.SERVERS }}
+        shell: bash
+        run: |
+          echo "$SERVERS" > config/servers.yml
+
+      - name: Render USERS secret into config/users.yml
+        env:
+          USERS: ${{ secrets.USERS }}
+        shell: bash
+        run: |
+          echo "$USERS" > config/users.yml
+
+      - name: Run playbook
+        shell: bash
+        run: make render_users_configs
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: 'static'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
+
+      - uses: geekyeggo/delete-artifact@v2
+        if: always()
+        with:
+          name: github-pages
+          failOnError: false

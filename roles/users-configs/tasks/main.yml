@@ -1,0 +1,61 @@
+- name: Ensure required variables are defined
+  assert:
+    that:
+      - users_configs_default_redirect is string
+
+- name: Ensure users_configs_users is defined correctly
+  include_tasks: tasks/assert-users.yml
+  vars:
+    users: "{{ users_configs_users }}"
+
+- name: Ensure users_configs_servers is defined correctly
+  include_tasks: tasks/assert-servers.yml
+  vars:
+    servers: "{{ users_configs_servers }}"
+
+- set_fact:
+    users_configs_static_root_local: "./{{ users_configs_static_directory_filename }}"
+    users_configs_instruction_filename: "{{ lookup('community.general.random_string', length=32, special=False) }}.html"
+
+- name: Create static directory locally
+  become: false
+  file:
+    path: "{{ users_configs_static_root_local }}"
+    state: directory
+
+- name: Remove unexpected files in local static dir
+  include_tasks: tasks/remove-unexpected-files.yml
+  vars:
+    directory: "{{ users_configs_static_root_local }}"
+    files: "{{ (users_configs_users | dict2items | map(attribute='key') | list) + ['robots.txt', 'index.html', users_configs_instruction_filename] }}"
+
+- name: Render index.html
+  become: false
+  template:
+    src: index.html.j2
+    dest: "{{ users_configs_static_root_local }}/index.html"
+
+- name: Render guide.html
+  become: false
+  copy:
+    src: guide.html
+    dest: "{{ users_configs_static_root_local }}/{{ users_configs_instruction_filename }}"
+
+- name: Copy robots.txt
+  become: false
+  copy:
+    src: robots.txt
+    dest: "{{ users_configs_static_root_local }}/robots.txt"
+
+- name: Render configs
+  become: false
+  template:
+    src: config.json.j2
+    dest: "{{ users_configs_static_root_local }}/{{ item.key }}"
+  with_items: "{{ users_configs_users | dict2items }}"
+  loop_control:
+    index_var: loop_index
+  vars:
+    users_configs_user_uuid: "{{ item.key }}"
+    users_configs_default_server: "{{ users_configs_servers[users_configs_default_server_uuid] }}"
+    users_configs_default_server_uuid: "{{ item.value.preferred_server_uuid if 'preferred_server_uuid' in item.value else (users_configs_servers | dict2items)[loop_index % (users_configs_servers | length)].key }}"

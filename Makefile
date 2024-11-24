@@ -1,8 +1,8 @@
 USERS_CSV_FILE = users.csv
-PLAYBOOK_FILE_FRONTMAN = frontman.yml
 PLAYBOOK_FILE_METRIX = metrics.yml
 PLAYBOOK_FILE_PROXIES = proxies.yml
 PLAYBOOK_FILE_USERS_CSV = users-csv.yml
+PLAYBOOK_FILE_USERS_CONFIGS = users-configs.yml
 HOSTS_FILE = inventory/hosts
 
 hosts_encrypt:
@@ -11,8 +11,11 @@ hosts_encrypt:
 hosts_decrypt:
 	ansible-vault decrypt $(HOSTS_FILE)
 
-generate_users_csv:
+render_users_csv:
 	ansible-playbook $(PLAYBOOK_FILE_USERS_CSV)
+
+render_users_configs:
+	ansible-playbook $(PLAYBOOK_FILE_USERS_CONFIGS)
 
 deploy_frontman:
 	ansible-playbook $(PLAYBOOK_FILE_FRONTMAN)

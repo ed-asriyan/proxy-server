@@ -2,8 +2,9 @@ vault.txt
 users.csv
 id_rsa
 id_rsa.pub
-config/frontman.yml
+config/users-configs.yml
 config/metrics.yml
 config/servers.yml
 config/users.yml
 config/hosts.yml
+static

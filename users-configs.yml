@@ -1,0 +1,14 @@
+- hosts:
+    - localhost
+  no_log: true
+  vars_files:
+    - ./config/users-configs.yml
+    - ./config/servers.yml
+    - ./config/users.yml
+  roles:
+    - role: users-configs
+      vars:
+        users_configs_default_redirect: "{{ config_users_configs_default_redirect }}"
+        users_configs_servers: "{{ config_servers }}"
+        users_configs_users: "{{ config_users }}"
+        users_configs_static_directory_filename: static

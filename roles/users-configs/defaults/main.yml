@@ -1,0 +1,11 @@
+# where redirect to if user opened index page without paramneters
+users_configs_default_redirect:
+
+# users as described in /users-example.yml
+users_configs_users:
+
+# servers object as described in /servers-example.yml
+users_configs_servers:
+
+# relative path of directory where static content should be stored
+users_configs_static_directory_filename:

@@ -1,0 +1,31 @@
+{
+    "version": 1,
+    "servers": [
+        {% for server_item in users_configs_servers | dict2items %}
+            {% set users_configs_server_uuid = server_item.key %}
+            {% set users_configs_server = server_item.value %}
+            {
+                "id": "{{ users_configs_server_uuid }}",
+                "remarks": "{{ users_configs_server.remarks }}",
+                "server": "{{ users_configs_server.host }}",
+                "server_port": {{ users_configs_server.port }},
+                "password": "{{ (users_configs_user_uuid + users_configs_server.port | string + users_configs_server.method + users_configs_server_uuid | string + users_configs_server.secret | string) | hash('sha512') }}",
+                "method": "{{ users_configs_server.method }}",
+                "prefix": "{{ users_configs_server.prefix }}"
+            }
+            {% if not loop.last %}
+            ,
+            {% endif %}
+        {% endfor %}
+    ],
+
+    "instruction_url": "/{{ users_configs_instruction_filename }}#{{ users_configs_user_uuid }}",
+
+    "comment": "the fields below are specifically for Outline client as it does not support the latest version of SIP008",
+
+    "method": "{{ users_configs_default_server.method }}",
+    "password": "{{ (users_configs_user_uuid + users_configs_default_server.port | string + users_configs_default_server.method + users_configs_default_server_uuid | string + users_configs_default_server.secret | string) | hash('sha512') }}",
+    "prefix": "{{ users_configs_default_server.prefix }}",
+    "server":"{{ users_configs_default_server.host }}",
+    "server_port": {{ users_configs_default_server.port }}
+}

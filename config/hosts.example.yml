@@ -1,10 +1,5 @@
 all:
   hosts:
-    frontman:
-      # public domain or IP where frontman should be deployed (if ssh and https are on the same IP, it should be equal to config_frontman_domain value)
-      ansible_host:
-      # linux user to connect to ssh to the server as
-      ansible_user:
     metrics:
       # public domain or IP where metrics server should be deployed
       ansible_host:

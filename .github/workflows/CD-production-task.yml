@@ -37,13 +37,6 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > id_rsa && chmod 600 id_rsa
 
-      - name: Render FRONTMAN secret into config/frontman.yml
-        env:
-          FRONTMAN: ${{ secrets.FRONTMAN }}
-        shell: bash
-        run: |
-          echo "$FRONTMAN" > config/frontman.yml
-
       - name: Render HOSTS secret into config/hosts.yml
         env:
           HOSTS: ${{ secrets.HOSTS }}

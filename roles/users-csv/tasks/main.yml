@@ -1,8 +1,7 @@
 - name: Ensure required variables are defined
   assert:
     that:
-      - users_csv_frontman_domain is string
-      - users_csv_frontman_port is number
+      - users_csv_domain is string
       - users_csv_output_file is string
 
 - name: Ensure users_csv_users is defined correctly
@@ -12,7 +11,6 @@
 
 - name: Render users.csv
   become: false
-  delegate_to: localhost
   template:
     src: users.csv.j2
     dest: "{{ users_csv_output_file }}"

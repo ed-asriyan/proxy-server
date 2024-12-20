@@ -9,3 +9,6 @@ users_configs_servers:
 
 # relative path of directory where static content should be stored
 users_configs_static_directory_filename:
+
+# where to redirect user (due to the project is DEPRECATED)
+users_configs_new_services_url:

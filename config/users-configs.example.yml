@@ -1,2 +1,5 @@
 # where redirect to if user opened index page without valid parameters
 config_users_configs_default_redirect:
+
+# new service where users should be redirected to (due to this project is DEPRECATED)
+config_users_configs_new_services_url:

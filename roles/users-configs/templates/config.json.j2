@@ -27,5 +27,9 @@
     "password": "{{ (users_configs_user_uuid + users_configs_default_server.port | string + users_configs_default_server.method + users_configs_default_server_uuid | string + users_configs_default_server.secret | string) | hash('sha512') }}",
     "prefix": "{{ users_configs_default_server.prefix }}",
     "server":"{{ users_configs_default_server.host }}",
-    "server_port": {{ users_configs_default_server.port }}
+    "server_port": {{ users_configs_default_server.port }},
+
+    "error": {
+        "message": "РКН начал блокировать Outline (shadowsocks). Пора переходить на более защищённые протоколы. Открой ссылку с инструкцией, по котороый ты устанавливал(а) этот впн. Там будет ссылка на новое приложение."
+    }
 }
